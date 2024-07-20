@@ -1,0 +1,23 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "stardriven:block/display"
+    },
+    "facing=east": {
+      "model": "stardriven:block/display"
+    },
+    "facing=north": {
+      "model": "stardriven:block/display"
+    },
+    "facing=south": {
+      "model": "stardriven:block/display"
+    },
+    "facing=up": {
+      "model": "stardriven:block/display",
+      "y": 270
+    },
+    "facing=west": {
+      "model": "stardriven:block/display"
+    }
+  }
+}
