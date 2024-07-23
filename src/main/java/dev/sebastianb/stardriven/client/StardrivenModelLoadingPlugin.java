@@ -1,8 +1,8 @@
 package dev.sebastianb.stardriven.client;
 
 import dev.sebastianb.stardriven.client.block.model.BakedDisplayBlockModel;
-import dev.sebastianb.stardriven.client.block.model.UnbakedDisplayBlockModel;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
+import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.util.Identifier;
 
@@ -15,7 +15,7 @@ public class StardrivenModelLoadingPlugin implements ModelLoadingPlugin {
 
         pluginContext.modifyModelAfterBake().register((loaded, context) -> {
             if(context.id().toTranslationKey().startsWith(DISPLAY_MODEL.toTranslationKey())) {
-                return loaded;
+                return loaded; // new BakedDisplayBlockModel(loaded, context.textureGetter());
             } else {
                 return loaded;
             }

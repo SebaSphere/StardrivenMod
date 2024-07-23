@@ -1,11 +1,14 @@
 package dev.sebastianb.stardriven.client.block.model;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import dev.sebastianb.stardriven.mixin.BakedQuadAccessor;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 import net.fabricmc.fabric.api.renderer.v1.model.WrapperBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
+import net.fabricmc.fabric.impl.client.indigo.renderer.helper.TextureHelper;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.model.*;
 import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.render.model.json.ModelTransformation;
@@ -30,9 +33,11 @@ public class BakedDisplayBlockModel implements BakedModel, WrapperBakedModel {
 
 
     BakedModel model;
+    Function<SpriteIdentifier, Sprite> textureGetter;
 
-    public BakedDisplayBlockModel(BakedModel model) {
+    public BakedDisplayBlockModel(BakedModel model, Function<SpriteIdentifier, Sprite> textureGetter) {
         this.model = model;
+        this.textureGetter = textureGetter;
     }
 
     @Override
@@ -42,20 +47,11 @@ public class BakedDisplayBlockModel implements BakedModel, WrapperBakedModel {
 
     @Override
     public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos blockPos, Supplier<Random> randomSupplier, RenderContext context) {
-        context.pushTransform(quad -> {
 
+        var bakedModel = MinecraftClient.getInstance().getBlockRenderManager().getModels().getModel(state);
 
+        var emitter = context.getEmitter();
 
-            for (int i = 0; i < 4; i++) {
-                // rotation of UVs by 90 degrees
-                float u = quad.u(i);
-                float v = quad.v(i);
-
-            }
-
-            // Check for being horizontal and north/south
-            return true;
-        });
         model.emitBlockQuads(blockView, state, blockPos, randomSupplier, context);
         context.popTransform();
     }

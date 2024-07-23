@@ -38,7 +38,7 @@ public class SpaceSkyRenderer implements DimensionRenderingRegistry.SkyRenderer 
 
 
         starRendererManager
-                .setRelativeCameraRenderPosition(new CameraRenderPosition(0,0,0));
+                .setRelativeCameraRenderPosition(new CameraRenderPosition(0,333,0));
 
         starRendererManager.setupBufferPositions();
 

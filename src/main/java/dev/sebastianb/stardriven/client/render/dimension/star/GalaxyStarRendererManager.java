@@ -109,8 +109,9 @@ public class GalaxyStarRendererManager {
 
             Vec3d starToCameraNormalized = starToCamera.normalize();
 
+            var starPos = new Vec3d(star.x, star.y, star.z);
 
-            double distance = starToCamera.length();
+            double distance = starPos.distanceTo(cameraPos);
 
             double modifiedStarSize = getModifiedStarSize(distance, starSize);
 
@@ -118,7 +119,7 @@ public class GalaxyStarRendererManager {
                 continue;
             }
 
-            double distanceAndSizeMultiplied = cameraPos.distanceTo(starToCamera) * modifiedStarSize;
+            double distanceAndSizeMultiplied = distance * modifiedStarSize * 1.23;
 
 
             Vec3d right = starToCameraNormalized.crossProduct(new Vec3d(0, 1, 0)).normalize();

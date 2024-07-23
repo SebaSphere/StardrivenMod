@@ -22,23 +22,23 @@ public class BlockRenderManagerMixin {
     @Inject(method = "renderBlock", at = @At("HEAD"))
     private void renderBlock(BlockState blockState, BlockPos blockPos, BlockRenderView blockRenderView, MatrixStack matrixStack, VertexConsumer vertexConsumer, boolean bl, Random random, CallbackInfo ci) {
 
-        if (blockState.getBlock() == StardrivenBlocks.DisplayBlocks.DISPLAY.asBlock()) {
-
-            int rotation = blockState.get(DisplayBlock.DISPLAY_ROTATION).getRotation();
-
-
-            Direction direction = blockState.get(DisplayBlock.FACING);
-            switch (direction) {
-                case EAST -> {
-
-                    matrixStack.translate(0.5, 0.5, 0.5);
-                    matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(rotation));
-                    matrixStack.translate(-0.5, -0.5, -0.5);
-                }
-            }
-
-
-        }
+//        if (blockState.getBlock() == StardrivenBlocks.DisplayBlocks.DISPLAY.asBlock()) {
+//
+//            int rotation = blockState.get(DisplayBlock.DISPLAY_ROTATION).getRotation();
+//
+//
+//            Direction direction = blockState.get(DisplayBlock.FACING);
+//            switch (direction) {
+//                case EAST -> {
+//
+//                    matrixStack.translate(0.5, 0.5, 0.5);
+//                    matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(rotation));
+//                    matrixStack.translate(-0.5, -0.5, -0.5);
+//                }
+//            }
+//
+//
+//        }
 
     }
 
