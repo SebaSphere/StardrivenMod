@@ -6,6 +6,9 @@
   "mixins": [
   ],
   "client": [
+    "BlockModelRendererMixin",
+    "BlockRenderManagerMixin",
+    "ChunkBuilderRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

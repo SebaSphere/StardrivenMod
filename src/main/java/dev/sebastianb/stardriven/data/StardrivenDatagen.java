@@ -12,6 +12,5 @@ public class StardrivenDatagen implements DataGeneratorEntrypoint {
 
         pack.addProvider(StardrivenModelProvider::new);
 
-
     }
 }

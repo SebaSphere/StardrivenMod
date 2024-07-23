@@ -22,10 +22,6 @@ loom {
     accessWidenerPath = file("src/main/resources/stardriven.accesswidener")
 }
 
-fabricApi {
-    configureDataGeneration()
-}
-
 dependencies {
     // To change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
@@ -52,6 +48,7 @@ processResources {
                 "minecraft_version": project.minecraft_version,
                 "loader_version": project.loader_version
     }
+
 }
 
 def targetJavaVersion = 17
@@ -99,4 +96,8 @@ publishing {
         // The repositories here will be used for publishing your artifact, not for
         // retrieving dependencies.
     }
+}
+
+fabricApi {
+    configureDataGeneration()
 }

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "stardriven",
-  "version": "${version}",
+  "version": "1.0.0",
   "name": "Stardriven",
   "description": "",
   "accessWidener": "stardriven.accesswidener",
@@ -9,7 +9,7 @@
   "contact": {
     "repo": "https://github.com/me/Stardriven"
   },
-  "license": "MIT",
+  "license": "ARR",
   "icon": "assets/stardriven/icon.png",
   "environment": "*",
   "entrypoints": {

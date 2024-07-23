@@ -1,23 +1,484 @@
 {
   "variants": {
-    "facing=down": {
-      "model": "stardriven:block/display"
+    "display_piece=corner,display_rotation=0,facing=down": {
+      "model": "stardriven:block/display_corner",
+      "x": 180,
+      "y": 0
     },
-    "facing=east": {
-      "model": "stardriven:block/display"
+    "display_piece=corner,display_rotation=0,facing=east": {
+      "model": "stardriven:block/display_corner",
+      "x": 90,
+      "y": 90
     },
-    "facing=north": {
-      "model": "stardriven:block/display"
+    "display_piece=corner,display_rotation=0,facing=north": {
+      "model": "stardriven:block/display_corner",
+      "x": 90,
+      "y": 0
     },
-    "facing=south": {
-      "model": "stardriven:block/display"
+    "display_piece=corner,display_rotation=0,facing=south": {
+      "model": "stardriven:block/display_corner",
+      "x": 90,
+      "y": 180
     },
-    "facing=up": {
-      "model": "stardriven:block/display",
+    "display_piece=corner,display_rotation=0,facing=up": {
+      "model": "stardriven:block/display_corner",
+      "x": 0,
+      "y": 0
+    },
+    "display_piece=corner,display_rotation=0,facing=west": {
+      "model": "stardriven:block/display_corner",
+      "x": 270,
+      "y": 90
+    },
+    "display_piece=corner,display_rotation=180,facing=down": {
+      "model": "stardriven:block/display_corner",
+      "x": 180,
+      "y": 180
+    },
+    "display_piece=corner,display_rotation=180,facing=east": {
+      "model": "stardriven:block/display_corner",
+      "x": 90,
+      "y": 90
+    },
+    "display_piece=corner,display_rotation=180,facing=north": {
+      "model": "stardriven:block/display_corner",
+      "x": 90,
+      "y": 0
+    },
+    "display_piece=corner,display_rotation=180,facing=south": {
+      "model": "stardriven:block/display_corner",
+      "x": 90,
+      "y": 180
+    },
+    "display_piece=corner,display_rotation=180,facing=up": {
+      "model": "stardriven:block/display_corner",
+      "x": 0,
+      "y": 180
+    },
+    "display_piece=corner,display_rotation=180,facing=west": {
+      "model": "stardriven:block/display_corner",
+      "x": 270,
+      "y": 90
+    },
+    "display_piece=corner,display_rotation=270,facing=down": {
+      "model": "stardriven:block/display_corner",
+      "x": 180,
       "y": 270
     },
-    "facing=west": {
-      "model": "stardriven:block/display"
+    "display_piece=corner,display_rotation=270,facing=east": {
+      "model": "stardriven:block/display_corner",
+      "x": 90,
+      "y": 90
+    },
+    "display_piece=corner,display_rotation=270,facing=north": {
+      "model": "stardriven:block/display_corner",
+      "x": 90,
+      "y": 0
+    },
+    "display_piece=corner,display_rotation=270,facing=south": {
+      "model": "stardriven:block/display_corner",
+      "x": 90,
+      "y": 180
+    },
+    "display_piece=corner,display_rotation=270,facing=up": {
+      "model": "stardriven:block/display_corner",
+      "x": 0,
+      "y": 270
+    },
+    "display_piece=corner,display_rotation=270,facing=west": {
+      "model": "stardriven:block/display_corner",
+      "x": 270,
+      "y": 90
+    },
+    "display_piece=corner,display_rotation=90,facing=down": {
+      "model": "stardriven:block/display_corner",
+      "x": 180,
+      "y": 90
+    },
+    "display_piece=corner,display_rotation=90,facing=east": {
+      "model": "stardriven:block/display_corner",
+      "x": 90,
+      "y": 90
+    },
+    "display_piece=corner,display_rotation=90,facing=north": {
+      "model": "stardriven:block/display_corner",
+      "x": 90,
+      "y": 0
+    },
+    "display_piece=corner,display_rotation=90,facing=south": {
+      "model": "stardriven:block/display_corner",
+      "x": 90,
+      "y": 180
+    },
+    "display_piece=corner,display_rotation=90,facing=up": {
+      "model": "stardriven:block/display_corner",
+      "x": 0,
+      "y": 90
+    },
+    "display_piece=corner,display_rotation=90,facing=west": {
+      "model": "stardriven:block/display_corner",
+      "x": 270,
+      "y": 90
+    },
+    "display_piece=edge,display_rotation=0,facing=down": {
+      "model": "stardriven:block/display_side_piece",
+      "x": 180,
+      "y": 0
+    },
+    "display_piece=edge,display_rotation=0,facing=east": {
+      "model": "stardriven:block/display_side_piece",
+      "x": 90,
+      "y": 90
+    },
+    "display_piece=edge,display_rotation=0,facing=north": {
+      "model": "stardriven:block/display_side_piece",
+      "x": 90,
+      "y": 0
+    },
+    "display_piece=edge,display_rotation=0,facing=south": {
+      "model": "stardriven:block/display_side_piece",
+      "x": 90,
+      "y": 180
+    },
+    "display_piece=edge,display_rotation=0,facing=up": {
+      "model": "stardriven:block/display_side_piece",
+      "x": 0,
+      "y": 0
+    },
+    "display_piece=edge,display_rotation=0,facing=west": {
+      "model": "stardriven:block/display_side_piece",
+      "x": 270,
+      "y": 90
+    },
+    "display_piece=edge,display_rotation=180,facing=down": {
+      "model": "stardriven:block/display_side_piece",
+      "x": 180,
+      "y": 180
+    },
+    "display_piece=edge,display_rotation=180,facing=east": {
+      "model": "stardriven:block/display_side_piece",
+      "x": 90,
+      "y": 90
+    },
+    "display_piece=edge,display_rotation=180,facing=north": {
+      "model": "stardriven:block/display_side_piece",
+      "x": 90,
+      "y": 0
+    },
+    "display_piece=edge,display_rotation=180,facing=south": {
+      "model": "stardriven:block/display_side_piece",
+      "x": 90,
+      "y": 180
+    },
+    "display_piece=edge,display_rotation=180,facing=up": {
+      "model": "stardriven:block/display_side_piece",
+      "x": 0,
+      "y": 180
+    },
+    "display_piece=edge,display_rotation=180,facing=west": {
+      "model": "stardriven:block/display_side_piece",
+      "x": 270,
+      "y": 90
+    },
+    "display_piece=edge,display_rotation=270,facing=down": {
+      "model": "stardriven:block/display_side_piece",
+      "x": 180,
+      "y": 270
+    },
+    "display_piece=edge,display_rotation=270,facing=east": {
+      "model": "stardriven:block/display_side_piece",
+      "x": 90,
+      "y": 90
+    },
+    "display_piece=edge,display_rotation=270,facing=north": {
+      "model": "stardriven:block/display_side_piece",
+      "x": 90,
+      "y": 0
+    },
+    "display_piece=edge,display_rotation=270,facing=south": {
+      "model": "stardriven:block/display_side_piece",
+      "x": 90,
+      "y": 180
+    },
+    "display_piece=edge,display_rotation=270,facing=up": {
+      "model": "stardriven:block/display_side_piece",
+      "x": 0,
+      "y": 270
+    },
+    "display_piece=edge,display_rotation=270,facing=west": {
+      "model": "stardriven:block/display_side_piece",
+      "x": 270,
+      "y": 90
+    },
+    "display_piece=edge,display_rotation=90,facing=down": {
+      "model": "stardriven:block/display_side_piece",
+      "x": 180,
+      "y": 90
+    },
+    "display_piece=edge,display_rotation=90,facing=east": {
+      "model": "stardriven:block/display_side_piece",
+      "x": 90,
+      "y": 90
+    },
+    "display_piece=edge,display_rotation=90,facing=north": {
+      "model": "stardriven:block/display_side_piece",
+      "x": 90,
+      "y": 0
+    },
+    "display_piece=edge,display_rotation=90,facing=south": {
+      "model": "stardriven:block/display_side_piece",
+      "x": 90,
+      "y": 180
+    },
+    "display_piece=edge,display_rotation=90,facing=up": {
+      "model": "stardriven:block/display_side_piece",
+      "x": 0,
+      "y": 90
+    },
+    "display_piece=edge,display_rotation=90,facing=west": {
+      "model": "stardriven:block/display_side_piece",
+      "x": 270,
+      "y": 90
+    },
+    "display_piece=single,display_rotation=0,facing=down": {
+      "model": "stardriven:block/display",
+      "x": 180,
+      "y": 0
+    },
+    "display_piece=single,display_rotation=0,facing=east": {
+      "model": "stardriven:block/display",
+      "x": 90,
+      "y": 90
+    },
+    "display_piece=single,display_rotation=0,facing=north": {
+      "model": "stardriven:block/display",
+      "x": 90,
+      "y": 0
+    },
+    "display_piece=single,display_rotation=0,facing=south": {
+      "model": "stardriven:block/display",
+      "x": 90,
+      "y": 180
+    },
+    "display_piece=single,display_rotation=0,facing=up": {
+      "model": "stardriven:block/display",
+      "x": 0,
+      "y": 0
+    },
+    "display_piece=single,display_rotation=0,facing=west": {
+      "model": "stardriven:block/display",
+      "x": 270,
+      "y": 90
+    },
+    "display_piece=single,display_rotation=180,facing=down": {
+      "model": "stardriven:block/display",
+      "x": 180,
+      "y": 180
+    },
+    "display_piece=single,display_rotation=180,facing=east": {
+      "model": "stardriven:block/display",
+      "x": 90,
+      "y": 90
+    },
+    "display_piece=single,display_rotation=180,facing=north": {
+      "model": "stardriven:block/display",
+      "x": 90,
+      "y": 0
+    },
+    "display_piece=single,display_rotation=180,facing=south": {
+      "model": "stardriven:block/display",
+      "x": 90,
+      "y": 180
+    },
+    "display_piece=single,display_rotation=180,facing=up": {
+      "model": "stardriven:block/display",
+      "x": 0,
+      "y": 180
+    },
+    "display_piece=single,display_rotation=180,facing=west": {
+      "model": "stardriven:block/display",
+      "x": 270,
+      "y": 90
+    },
+    "display_piece=single,display_rotation=270,facing=down": {
+      "model": "stardriven:block/display",
+      "x": 180,
+      "y": 270
+    },
+    "display_piece=single,display_rotation=270,facing=east": {
+      "model": "stardriven:block/display",
+      "x": 90,
+      "y": 90
+    },
+    "display_piece=single,display_rotation=270,facing=north": {
+      "model": "stardriven:block/display",
+      "x": 90,
+      "y": 0
+    },
+    "display_piece=single,display_rotation=270,facing=south": {
+      "model": "stardriven:block/display",
+      "x": 90,
+      "y": 180
+    },
+    "display_piece=single,display_rotation=270,facing=up": {
+      "model": "stardriven:block/display",
+      "x": 0,
+      "y": 270
+    },
+    "display_piece=single,display_rotation=270,facing=west": {
+      "model": "stardriven:block/display",
+      "x": 270,
+      "y": 90
+    },
+    "display_piece=single,display_rotation=90,facing=down": {
+      "model": "stardriven:block/display",
+      "x": 180,
+      "y": 90
+    },
+    "display_piece=single,display_rotation=90,facing=east": {
+      "model": "stardriven:block/display",
+      "x": 90,
+      "y": 90
+    },
+    "display_piece=single,display_rotation=90,facing=north": {
+      "model": "stardriven:block/display",
+      "x": 90,
+      "y": 0
+    },
+    "display_piece=single,display_rotation=90,facing=south": {
+      "model": "stardriven:block/display",
+      "x": 90,
+      "y": 180
+    },
+    "display_piece=single,display_rotation=90,facing=up": {
+      "model": "stardriven:block/display",
+      "x": 0,
+      "y": 90
+    },
+    "display_piece=single,display_rotation=90,facing=west": {
+      "model": "stardriven:block/display",
+      "x": 270,
+      "y": 90
+    },
+    "display_piece=three_edge,display_rotation=0,facing=down": {
+      "model": "stardriven:block/display_three_corner",
+      "x": 180,
+      "y": 0
+    },
+    "display_piece=three_edge,display_rotation=0,facing=east": {
+      "model": "stardriven:block/display_three_corner",
+      "x": 90,
+      "y": 90
+    },
+    "display_piece=three_edge,display_rotation=0,facing=north": {
+      "model": "stardriven:block/display_three_corner",
+      "x": 90,
+      "y": 0
+    },
+    "display_piece=three_edge,display_rotation=0,facing=south": {
+      "model": "stardriven:block/display_three_corner",
+      "x": 90,
+      "y": 180
+    },
+    "display_piece=three_edge,display_rotation=0,facing=up": {
+      "model": "stardriven:block/display_three_corner",
+      "x": 0,
+      "y": 0
+    },
+    "display_piece=three_edge,display_rotation=0,facing=west": {
+      "model": "stardriven:block/display_three_corner",
+      "x": 270,
+      "y": 90
+    },
+    "display_piece=three_edge,display_rotation=180,facing=down": {
+      "model": "stardriven:block/display_three_corner",
+      "x": 180,
+      "y": 180
+    },
+    "display_piece=three_edge,display_rotation=180,facing=east": {
+      "model": "stardriven:block/display_three_corner",
+      "x": 90,
+      "y": 90
+    },
+    "display_piece=three_edge,display_rotation=180,facing=north": {
+      "model": "stardriven:block/display_three_corner",
+      "x": 90,
+      "y": 0
+    },
+    "display_piece=three_edge,display_rotation=180,facing=south": {
+      "model": "stardriven:block/display_three_corner",
+      "x": 90,
+      "y": 180
+    },
+    "display_piece=three_edge,display_rotation=180,facing=up": {
+      "model": "stardriven:block/display_three_corner",
+      "x": 0,
+      "y": 180
+    },
+    "display_piece=three_edge,display_rotation=180,facing=west": {
+      "model": "stardriven:block/display_three_corner",
+      "x": 270,
+      "y": 90
+    },
+    "display_piece=three_edge,display_rotation=270,facing=down": {
+      "model": "stardriven:block/display_three_corner",
+      "x": 180,
+      "y": 270
+    },
+    "display_piece=three_edge,display_rotation=270,facing=east": {
+      "model": "stardriven:block/display_three_corner",
+      "x": 90,
+      "y": 90
+    },
+    "display_piece=three_edge,display_rotation=270,facing=north": {
+      "model": "stardriven:block/display_three_corner",
+      "x": 90,
+      "y": 0
+    },
+    "display_piece=three_edge,display_rotation=270,facing=south": {
+      "model": "stardriven:block/display_three_corner",
+      "x": 90,
+      "y": 180
+    },
+    "display_piece=three_edge,display_rotation=270,facing=up": {
+      "model": "stardriven:block/display_three_corner",
+      "x": 0,
+      "y": 270
+    },
+    "display_piece=three_edge,display_rotation=270,facing=west": {
+      "model": "stardriven:block/display_three_corner",
+      "x": 270,
+      "y": 90
+    },
+    "display_piece=three_edge,display_rotation=90,facing=down": {
+      "model": "stardriven:block/display_three_corner",
+      "x": 180,
+      "y": 90
+    },
+    "display_piece=three_edge,display_rotation=90,facing=east": {
+      "model": "stardriven:block/display_three_corner",
+      "x": 90,
+      "y": 90
+    },
+    "display_piece=three_edge,display_rotation=90,facing=north": {
+      "model": "stardriven:block/display_three_corner",
+      "x": 90,
+      "y": 0
+    },
+    "display_piece=three_edge,display_rotation=90,facing=south": {
+      "model": "stardriven:block/display_three_corner",
+      "x": 90,
+      "y": 180
+    },
+    "display_piece=three_edge,display_rotation=90,facing=up": {
+      "model": "stardriven:block/display_three_corner",
+      "x": 0,
+      "y": 90
+    },
+    "display_piece=three_edge,display_rotation=90,facing=west": {
+      "model": "stardriven:block/display_three_corner",
+      "x": 270,
+      "y": 90
     }
   }
 }
