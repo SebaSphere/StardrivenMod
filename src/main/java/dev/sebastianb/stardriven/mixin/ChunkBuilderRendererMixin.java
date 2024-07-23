@@ -1,7 +1,6 @@
 package dev.sebastianb.stardriven.mixin;
 
 import dev.sebastianb.stardriven.block.StardrivenBlocks;
-import dev.sebastianb.stardriven.client.DisplayBlockRenderer;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.RenderLayer;
@@ -41,7 +40,7 @@ public class ChunkBuilderRendererMixin {
                                 Set set, Random random, BlockRenderManager blockRenderManager,
                                 Iterator var15, BlockPos blockPos3, BlockState blockState
     ) {
-        DisplayBlockRenderer.translateModel(cameraX, cameraY, cameraZ, blockBufferBuilderStorage, cir, renderData, i, blockPos, blockPos2, chunkOcclusionDataBuilder, chunkRendererRegion, matrixStack, set, random, blockRenderManager, var15, blockPos3, blockState);
+
 
     }
 }
