@@ -105,13 +105,7 @@ public class GalaxyStarRendererManager {
             double y = star.y - cameraRenderPosition.getY();
             double z = star.z - cameraRenderPosition.getZ();
 
-            Vec3d starPos = new Vec3d(x, y, z); // Star's position in world space
-
-            Vec3d starToCamera = cameraPos.subtract(
-                    x,
-                    y,
-                    z);
-
+            Vec3d starToCamera = new Vec3d(x, y, z); // Star's position relative to camera
 
             Vec3d starToCameraNormalized = starToCamera.normalize();
 
@@ -124,17 +118,13 @@ public class GalaxyStarRendererManager {
                 continue;
             }
 
-            double distanceAndSizeMultiplied = new Vec3d(
-                    cameraRenderPosition.getX(),
-                    cameraRenderPosition.getY(),
-                    cameraRenderPosition.getZ())
-                    .distanceTo(starToCamera) * modifiedStarSize;
+            double distanceAndSizeMultiplied = cameraPos.distanceTo(starToCamera) * modifiedStarSize;
 
 
-            Vec3d right = new Vec3d(1, 0, 0).crossProduct(starToCameraNormalized).normalize();
+            Vec3d right = starToCameraNormalized.crossProduct(new Vec3d(0, 1, 0)).normalize();
 
             // Compute the up vector using cross product of right and starToCamera
-            Vec3d up = starToCameraNormalized.crossProduct(right).normalize();
+            Vec3d up = right.crossProduct(starToCameraNormalized).normalize();
 
 
             // size of a star to the camera
@@ -160,27 +150,27 @@ public class GalaxyStarRendererManager {
 
             // Define vertices of the quad (billboard) around the star with rotation
             buffer.vertex(
-                    starPos.x - rotatedRight.x * halfSize - rotatedUp.x * halfSize,
-                    starPos.y - rotatedRight.y * halfSize - rotatedUp.y * halfSize,
-                    starPos.z - rotatedRight.z * halfSize - rotatedUp.z * halfSize
+                    starToCamera.x - rotatedRight.x * halfSize - rotatedUp.x * halfSize,
+                    starToCamera.y - rotatedRight.y * halfSize - rotatedUp.y * halfSize,
+                    starToCamera.z - rotatedRight.z * halfSize - rotatedUp.z * halfSize
             ).next();
 
             buffer.vertex(
-                    starPos.x + rotatedRight.x * halfSize - rotatedUp.x * halfSize,
-                    starPos.y + rotatedRight.y * halfSize - rotatedUp.y * halfSize,
-                    starPos.z + rotatedRight.z * halfSize - rotatedUp.z * halfSize
+                    starToCamera.x + rotatedRight.x * halfSize - rotatedUp.x * halfSize,
+                    starToCamera.y + rotatedRight.y * halfSize - rotatedUp.y * halfSize,
+                    starToCamera.z + rotatedRight.z * halfSize - rotatedUp.z * halfSize
             ).next();
 
             buffer.vertex(
-                    starPos.x + rotatedRight.x * halfSize + rotatedUp.x * halfSize,
-                    starPos.y + rotatedRight.y * halfSize + rotatedUp.y * halfSize,
-                    starPos.z + rotatedRight.z * halfSize + rotatedUp.z * halfSize
+                    starToCamera.x + rotatedRight.x * halfSize + rotatedUp.x * halfSize,
+                    starToCamera.y + rotatedRight.y * halfSize + rotatedUp.y * halfSize,
+                    starToCamera.z + rotatedRight.z * halfSize + rotatedUp.z * halfSize
             ).next();
 
             buffer.vertex(
-                    starPos.x - rotatedRight.x * halfSize + rotatedUp.x * halfSize,
-                    starPos.y - rotatedRight.y * halfSize + rotatedUp.y * halfSize,
-                    starPos.z - rotatedRight.z * halfSize + rotatedUp.z * halfSize
+                    starToCamera.x - rotatedRight.x * halfSize + rotatedUp.x * halfSize,
+                    starToCamera.y - rotatedRight.y * halfSize + rotatedUp.y * halfSize,
+                    starToCamera.z - rotatedRight.z * halfSize + rotatedUp.z * halfSize
             ).next();
         }
         this.starBuffer.bind();
