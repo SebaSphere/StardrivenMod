@@ -116,10 +116,7 @@ public class GalaxyStarRendererManager {
             Vec3d starToCameraNormalized = starToCamera.normalize();
 
 
-            double distance = new Vec3d(
-                    cameraRenderPosition.getX(),
-                    cameraRenderPosition.getY(),
-                    cameraRenderPosition.getZ()).distanceTo(starToCamera);
+            double distance = starToCamera.length();
 
             double modifiedStarSize = getModifiedStarSize(distance, starSize);
 
