@@ -39,7 +39,6 @@ public class SpaceSkyRenderer implements DimensionRenderingRegistry.SkyRenderer 
         starRendererManager.render(context);
 
 
-
         matrices.pop();
         context.profiler().pop();
         RenderSystem.setShaderColor(1.0f, 1.0F, 1.0F, 1.0F);

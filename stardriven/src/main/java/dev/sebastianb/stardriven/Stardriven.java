@@ -27,6 +27,8 @@ public class Stardriven implements ModInitializer {
 
         StardrivenAPI._init(StardrivenAPIImpl.INSTANCE);
 
+
+
         StardrivenDimensions.register();
         StardrivenBiomes.register();
         StardrivenBlocks.register();

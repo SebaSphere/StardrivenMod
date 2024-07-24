@@ -43,7 +43,7 @@ public class BakedDisplayBlockModel implements BakedModel, WrapperBakedModel {
         var emitter = context.getEmitter();
 
         model.emitBlockQuads(blockView, state, blockPos, randomSupplier, context);
-        context.popTransform();
+
     }
 
     @Override
@@ -55,7 +55,7 @@ public class BakedDisplayBlockModel implements BakedModel, WrapperBakedModel {
 
     @Override
     public boolean useAmbientOcclusion() {
-        return model.useAmbientOcclusion();
+        return false;
     }
 
     @Override
