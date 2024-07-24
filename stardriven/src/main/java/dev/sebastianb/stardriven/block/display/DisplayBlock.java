@@ -14,11 +14,15 @@ import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.RotationPropertyHelper;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DisplayBlock extends Block {
 
@@ -29,7 +33,6 @@ public class DisplayBlock extends Block {
         THREE_EDGE("three_edge"),
         EMPTY("empty"),
         TWO_SIDE("two_side");
-        ;
 
         private final String name;
 
@@ -121,6 +124,10 @@ public class DisplayBlock extends Block {
     @Override
     public BlockState getPlacementState(ItemPlacementContext itemPlacementContext) {
         System.out.println(itemPlacementContext.getPlayerLookDirection().getOpposite());
+
+        Direction facing = itemPlacementContext.getPlayerLookDirection().getOpposite();
+
+
         return this.getDefaultState()
                 .with(FACING, itemPlacementContext.getPlayerLookDirection().getOpposite())
                 .with(DISPLAY_PIECE, DisplayPieceType.SINGLE)
@@ -137,10 +144,49 @@ public class DisplayBlock extends Block {
         return blockState.rotate(blockMirror.getRotation(blockState.get(FACING)));
     }
 
+    private ArrayList<BlockPos> displayPositions = new ArrayList<>();
 
     @Override
     public void onPlaced(World world, BlockPos blockPos, BlockState blockState, @Nullable LivingEntity livingEntity, ItemStack itemStack) {
+        Direction direction = blockState.get(FACING);
+        Direction[] directions;
+
+        if (direction == Direction.UP || direction == Direction.DOWN) {
+            directions = new Direction[]{Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
+        } else if (direction == Direction.NORTH || direction == Direction.SOUTH) {
+            directions = new Direction[]{Direction.EAST, Direction.UP, Direction.WEST, Direction.DOWN};
+        } else {
+            directions = new Direction[]{Direction.NORTH, Direction.UP, Direction.SOUTH, Direction.DOWN};
+        }
+
+        checkForDisplay(world, blockPos, directions);
+
+        System.out.println(displayPositions);
+
+
+        displayPositions.clear();
+
         super.onPlaced(world, blockPos, blockState, livingEntity, itemStack);
+    }
+
+    private void checkForDisplay(World world, BlockPos blockPos, Direction[] directions) {
+        for (Direction dir : directions) {
+            BlockPos placePos = blockPos.offset(dir);
+            if (world.getBlockState(placePos).isOf(this)) {
+                if (!displayPositions.contains(placePos)) {
+
+                    displayPositions.add(placePos);
+
+                    checkForDisplay(world, placePos, directions);
+                }
+
+            }
+
+            if (world.getBlockState(placePos).isAir()) {
+                world.setBlockState(placePos, Blocks.DIAMOND_BLOCK.getDefaultState());
+            }
+        }
 
     }
+
 }
