@@ -1,0 +1,12 @@
+accessWidener v2 named
+
+accessible method net/minecraft/world/gen/chunk/ChunkGenerator trySetStructureStart (Lnet/minecraft/structure/StructureSet$WeightedEntry;Lnet/minecraft/world/gen/StructureAccessor;Lnet/minecraft/registry/DynamicRegistryManager;Lnet/minecraft/world/gen/noise/NoiseConfig;Lnet/minecraft/structure/StructureTemplateManager;JLnet/minecraft/world/chunk/Chunk;Lnet/minecraft/util/math/ChunkPos;Lnet/minecraft/util/math/ChunkSectionPos;)Z
+accessible method net/minecraft/server/command/PlaceCommand throwOnUnloadedPos (Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/util/math/ChunkPos;Lnet/minecraft/util/math/ChunkPos;)V
+
+# for datagen
+extendable method net/minecraft/data/client/BlockStateVariantMap register (Lnet/minecraft/data/client/PropertiesMap;Ljava/util/List;)V
+accessible method net/minecraft/data/client/BlockStateVariantMap register (Lnet/minecraft/data/client/PropertiesMap;Ljava/util/List;)V
+
+# chunk render for block display
+accessible class net/minecraft/client/render/chunk/ChunkBuilder$BuiltChunk$RebuildTask
+accessible class net/minecraft/client/render/chunk/ChunkBuilder$BuiltChunk$RebuildTask$RenderData

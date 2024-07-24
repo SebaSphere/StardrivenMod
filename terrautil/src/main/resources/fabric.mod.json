@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "terrautil",
+  "version": "1.0.0",
+  "name": "TerraUtil",
+  "description": "",
+  "accessWidener": "terrautil.accesswidener",
+  "authors": [],
+  "contact": {
+    "repo": "https://github.com/me/Stardriven"
+  },
+  "license": "ARR",
+  "icon": "assets/terrautil/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "net.terradevelopment.terrautil.client.TerraUtilClient"
+    ],
+    "main": [
+      "net.terradevelopment.terrautil.TerraUtil"
+    ]
+  },
+  "mixins": [
+    "terrautil.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.15.11",
+    "fabric": "*",
+    "minecraft": "1.20.4"
+  }
+}
