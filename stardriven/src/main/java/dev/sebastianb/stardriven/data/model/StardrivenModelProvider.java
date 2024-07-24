@@ -122,6 +122,8 @@ public class StardrivenModelProvider extends FabricModelProvider {
             var cornerModel = ModelIds.getBlockSubModelId(block.asBlock(), "_corner");
             var sideModel = ModelIds.getBlockSubModelId(block.asBlock(), "_side_piece");
             var threeCornerModel = ModelIds.getBlockSubModelId(block.asBlock(), "_three_corner");
+            var emptyModel = ModelIds.getBlockSubModelId(block.asBlock(), "_empty");
+            var twoEdgePiece = ModelIds.getBlockSubModelId(block.asBlock(), "_two_side_piece");
 
             // I wish minecraft made it easier to work with this
             BlockStateVariantMap facingSupplier = BlockStateVariantMap.create(Properties.FACING)
@@ -169,6 +171,10 @@ public class StardrivenModelProvider extends FabricModelProvider {
                             case THREE_EDGE -> suppliers.add(createDisplayFacingBlockstate(
                                     displayFacing, direction, displayPiece, displayRotation, rotationX, rotationY, threeCornerModel)
                             );
+                            case TWO_SIDE -> suppliers.add(createDisplayFacingBlockstate(
+                                    displayFacing, direction, displayPiece, displayRotation, rotationX, rotationY, twoEdgePiece));
+                            case EMPTY -> suppliers.add(createDisplayFacingBlockstate(
+                                    displayFacing, direction, displayPiece, displayRotation, rotationX, rotationY, emptyModel));
 
                         }
                     }
@@ -215,7 +221,7 @@ public class StardrivenModelProvider extends FabricModelProvider {
     }
 
     private static Model blockItem(String string) {
-        return new Model(Optional.of(new Identifier(Stardriven.MOD_ID, "block/display/" + string)), Optional.empty());
+        return new Model(Optional.of(new Identifier(Stardriven.MOD_ID, "block/" + string)), Optional.empty());
     }
 
 }

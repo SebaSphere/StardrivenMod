@@ -26,7 +26,10 @@ public class DisplayBlock extends Block {
         CORNER("corner"),
         EDGE("edge"),
         SINGLE("single"),
-        THREE_EDGE("three_edge");
+        THREE_EDGE("three_edge"),
+        EMPTY("empty"),
+        TWO_SIDE("two_side");
+        ;
 
         private final String name;
 
