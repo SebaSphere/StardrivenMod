@@ -6,10 +6,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateManager;
-import net.minecraft.state.property.DirectionProperty;
-import net.minecraft.state.property.EnumProperty;
-import net.minecraft.state.property.IntProperty;
-import net.minecraft.state.property.Properties;
+import net.minecraft.state.property.*;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.StringIdentifiable;
@@ -38,7 +35,6 @@ public class DisplayBlock extends Block {
         public String asString() {
             return this.name;
         }
-
     }
 
     public enum DisplayRotation implements StringIdentifiable {
@@ -67,6 +63,8 @@ public class DisplayBlock extends Block {
 
     public static final EnumProperty<DisplayPieceType> DISPLAY_PIECE = EnumProperty.of("display_piece", DisplayPieceType.class);
     public static final DirectionProperty FACING = Properties.FACING;
+
+    public static final BooleanProperty TOP_CONNECTED = BooleanProperty.of("top_connected");
 
     public static final EnumProperty<DisplayRotation> DISPLAY_ROTATION =
             EnumProperty.of("display_rotation", DisplayRotation.class);
@@ -109,8 +107,7 @@ public class DisplayBlock extends Block {
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
         builder.add(
                 FACING,
-                DISPLAY_PIECE,
-                DISPLAY_ROTATION
+                TOP_CONNECTED
         );
     }
 
@@ -120,8 +117,7 @@ public class DisplayBlock extends Block {
         System.out.println(itemPlacementContext.getPlayerLookDirection().getOpposite());
         return this.getDefaultState()
                 .with(FACING, itemPlacementContext.getPlayerLookDirection().getOpposite())
-                .with(DISPLAY_PIECE, DisplayPieceType.SINGLE)
-                .with(DISPLAY_ROTATION, DisplayRotation.R0);
+                .with(TOP_CONNECTED, false);
     }
 
     @Override
@@ -138,6 +134,5 @@ public class DisplayBlock extends Block {
     @Override
     public void onPlaced(World world, BlockPos blockPos, BlockState blockState, @Nullable LivingEntity livingEntity, ItemStack itemStack) {
         super.onPlaced(world, blockPos, blockState, livingEntity, itemStack);
-
     }
 }
