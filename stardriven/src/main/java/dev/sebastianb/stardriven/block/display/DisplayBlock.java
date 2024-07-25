@@ -181,7 +181,7 @@ public class DisplayBlock extends Block {
 
         Direction[] possibleDirections = getPossibleDirections(facing);
 
-        Direction[] adjacentDisplayDirections = getAdjacentDisplays(blockView, pos, possibleDirections);
+        Direction[] adjacentDisplayDirections = getAdjacentDisplays(blockView, pos, possibleDirections, facing);
 
         DisplayPieceType type;
         DisplayRotation rotation;
@@ -347,7 +347,7 @@ public class DisplayBlock extends Block {
         Direction direction = blockState.get(FACING);
         Direction[] directions = getPossibleDirections(direction);
 
-        updateConnectedDisplays(world, blockPos, directions);
+        updateConnectedDisplays(world, blockPos, directions, direction);
 
         displayPositions.clear();
 
@@ -364,30 +364,34 @@ public class DisplayBlock extends Block {
         }
     }
 
-    private Direction[] getAdjacentDisplays(BlockView blockView, BlockPos blockPos, Direction[] directions) {
+    private Direction[] getAdjacentDisplays(BlockView blockView, BlockPos blockPos, Direction[] directions, Direction facing) {
         List<Direction> adjacentDirections = new ArrayList<>();
 
         for (Direction dir : directions) {
-            BlockPos placePos = blockPos.offset(dir);
+            BlockPos checkPos = blockPos.offset(dir);
 
-            if (blockView.getBlockState(placePos).isOf(this)) {
-                adjacentDirections.add(dir);
+            BlockState blockStateCheck = blockView.getBlockState(checkPos);
+
+            if (blockStateCheck.isOf(this)) {
+                if (blockStateCheck.get(FACING) == facing) {
+                    adjacentDirections.add(dir);
+                }
             }
         }
 
         return adjacentDirections.toArray(new Direction[0]);
     }
 
-    private void updateConnectedDisplays(World world, BlockPos blockPos, Direction[] directions) {
-        for (Direction dir : directions) {
-            BlockPos placePos = blockPos.offset(dir);
-            if (world.getBlockState(placePos).isOf(this)) {
-                if (!displayPositions.contains(placePos)) {
+    private void updateConnectedDisplays(BlockView blockView, BlockPos blockPos, Direction[] directions, Direction facing) {
+        Direction[] connectedDirections = getAdjacentDisplays(blockView, blockPos, directions, facing);
 
-                    displayPositions.add(placePos);
+        for (Direction dir : connectedDirections) {
+            BlockPos newPos = blockPos.offset(dir);
 
-                    updateConnectedDisplays(world, placePos, directions);
-                }
+            if (!displayPositions.contains(newPos)) {
+                displayPositions.add(newPos);
+
+                updateConnectedDisplays(blockView, newPos, connectedDirections, facing);
             }
         }
     }
