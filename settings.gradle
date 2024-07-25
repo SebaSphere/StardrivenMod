@@ -8,5 +8,5 @@ pluginManagement {
     }
 }
 
-include 'stardriven'
 include 'terrautil'
+include 'stardriven'

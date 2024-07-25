@@ -1,13 +1,14 @@
 package dev.sebastianb.stardriven;
 
 import dev.sebastianb.stardriven.api.StardrivenAPI;
-import dev.sebastianb.stardriven.api.impl.StardrivenAPIImpl;
+import dev.sebastianb.stardriven.api_impl.StardrivenAPIImpl;
 import dev.sebastianb.stardriven.dimension.StardrivenBiomes;
 import dev.sebastianb.stardriven.dimension.StardrivenDimensions;
 import dev.sebastianb.stardriven.block.StardrivenBlocks;
 import net.fabricmc.api.ModInitializer;
 import net.terradevelopment.terrautil.util.ModRegistry;
 
+import java.util.UUID;
 import java.util.logging.Logger;
 
 public class Stardriven implements ModInitializer {
@@ -18,6 +19,8 @@ public class Stardriven implements ModInitializer {
 
     public static final ModRegistry REGISTRY = new ModRegistry(MOD_ID);
 
+    public static StardrivenAPI.API API;
+
     /**
      * Runs the mod initializer.
      *
@@ -27,6 +30,9 @@ public class Stardriven implements ModInitializer {
 
         StardrivenAPI._init(StardrivenAPIImpl.INSTANCE);
 
+        API = StardrivenAPI.api();
+
+        API.getDimensionalShipManager().deleteDimensionalShip(UUID.randomUUID());
 
 
         StardrivenDimensions.register();

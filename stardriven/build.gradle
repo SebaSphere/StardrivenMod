@@ -7,6 +7,7 @@ version = project.mod_version
 group = project.maven_group
 
 repositories {
+    mavenLocal()
     maven {
         name = 'BlameJared Maven (CrT / Bookshelf)'
         url = 'https://maven.blamejared.com'
@@ -19,6 +20,12 @@ repositories {
 
     maven { url 'https://jitpack.io' }
 
+}
+
+tasks.named('remapJar') {
+    project(':terrautil').tasks.forEach { task ->
+        println(task.name)
+    }
 }
 
 loom {
@@ -41,6 +48,8 @@ loom {
 }
 
 dependencies {
+
+
     // To change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}"
@@ -53,7 +62,9 @@ dependencies {
         exclude group: "maven.modrinth"
     }
 
-    implementation project(':terrautil')
+    implementation project(path: ":terrautil", configuration: 'namedElements')
+    include project(path: ":terrautil", configuration: 'namedElements')
+
 
 }
 
