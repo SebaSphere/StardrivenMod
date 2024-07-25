@@ -53,6 +53,8 @@ dependencies {
         exclude group: "maven.modrinth"
     }
 
+    implementation project(':terrautil')
+
 }
 
 processResources {
