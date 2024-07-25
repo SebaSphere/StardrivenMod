@@ -1,5 +1,6 @@
 package dev.sebastianb.stardriven.block.display;
 
+import dev.sebastianb.stardriven.Stardriven;
 import net.minecraft.block.*;
 import net.minecraft.data.client.VariantSettings;
 import net.minecraft.entity.LivingEntity;
@@ -19,10 +20,13 @@ import net.minecraft.util.math.RotationPropertyHelper;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 
 public class DisplayBlock extends Block {
 
@@ -63,6 +67,37 @@ public class DisplayBlock extends Block {
             return rotation;
         }
 
+        public DisplayRotation rotateClockwise() {
+            int newRotation = rotation + 90;
+
+            return DisplayRotation.fromInt(newRotation % 360);
+        }
+
+        public DisplayRotation rotateCounterClockwise() {
+            int newRotation = rotation - 90;
+
+            return DisplayRotation.fromInt(newRotation % 360);
+        }
+
+        private static DisplayRotation fromInt(int rotation) {
+            switch (rotation) {
+                case 0 -> {
+                    return DisplayRotation.R0;
+                }
+                case 90 -> {
+                    return DisplayRotation.R90;
+                }
+                case 180 -> {
+                    return DisplayRotation.R180;
+                }
+                case 270 -> {
+                    return DisplayRotation.R270;
+                }
+            }
+
+            return DisplayRotation.R0;
+        }
+
         @Override
         public String asString() {
             return String.valueOf(this.rotation);
@@ -89,8 +124,6 @@ public class DisplayBlock extends Block {
     public DisplayBlock(Settings settings) {
         super(settings);
     }
-
-
 
     @Override
     public VoxelShape getOutlineShape(BlockState blockState, BlockView blockView, BlockPos blockPos, ShapeContext shapeContext) {
@@ -123,15 +156,178 @@ public class DisplayBlock extends Block {
     @Nullable
     @Override
     public BlockState getPlacementState(ItemPlacementContext itemPlacementContext) {
-        System.out.println(itemPlacementContext.getPlayerLookDirection().getOpposite());
-
         Direction facing = itemPlacementContext.getPlayerLookDirection().getOpposite();
 
-
-        return this.getDefaultState()
-                .with(FACING, itemPlacementContext.getPlayerLookDirection().getOpposite())
+        BlockState baseState = this.getDefaultState()
+                .with(FACING, facing)
                 .with(DISPLAY_PIECE, DisplayPieceType.SINGLE)
                 .with(DISPLAY_ROTATION, DisplayRotation.R0);
+
+        return getUpdatedState(itemPlacementContext.getWorld(), itemPlacementContext.getBlockPos(), baseState);
+    }
+
+    @Override
+    public void neighborUpdate(BlockState blockState, World world, BlockPos blockPos, Block block, BlockPos blockPos2, boolean bl) {
+        BlockState newBlockState = getUpdatedState(world, blockPos, blockState);
+
+        world.setBlockState(blockPos, newBlockState);
+
+        super.neighborUpdate(newBlockState, world, blockPos, block, blockPos2, bl);
+    }
+
+    @NotNull
+    private BlockState getUpdatedState(BlockView blockView, BlockPos pos, BlockState currentState) {
+        Direction facing = currentState.get(FACING);
+
+        Direction[] possibleDirections = getPossibleDirections(facing);
+
+        Direction[] adjacentDisplayDirections = getAdjacentDisplays(blockView, pos, possibleDirections);
+
+        DisplayPieceType type;
+        DisplayRotation rotation;
+
+        if (adjacentDisplayDirections.length == 0) {
+            type = DisplayPieceType.SINGLE;
+            rotation = DisplayRotation.R0;
+        } else if (adjacentDisplayDirections.length == 1) {
+            type = DisplayPieceType.THREE_EDGE;
+            rotation = rotationFromFacingAndDirection(facing, adjacentDisplayDirections[0]);
+        } else if (adjacentDisplayDirections.length == 2) {
+            if (adjacentDisplayDirections[0].getOpposite() == adjacentDisplayDirections[1]) {
+                type = DisplayPieceType.TWO_SIDE;
+                rotation = rotationFromFacingAndDirection(facing, adjacentDisplayDirections[0]);
+            } else {
+                type = DisplayPieceType.CORNER;
+                DisplayRotation rotation1 = rotationFromFacingAndDirection(facing, adjacentDisplayDirections[0]);
+                DisplayRotation rotation2 = rotationFromFacingAndDirection(facing, adjacentDisplayDirections[1]);
+
+                if (rotation2.rotateClockwise() == rotation1) {
+                    rotation = rotation2;
+                } else {
+                    rotation = rotation1;
+                }
+
+                if (facing == Direction.EAST || facing == Direction.WEST || facing == Direction.DOWN) {
+                    rotation = rotation.rotateClockwise();
+                }
+            }
+        } else if (adjacentDisplayDirections.length == 3) {
+            type = DisplayPieceType.EDGE;
+
+            List<Direction> adjacentDisplayDirectionsList = Arrays.asList(adjacentDisplayDirections);
+
+            rotation = DisplayRotation.R0;
+
+            for (Direction dir : possibleDirections) {
+                if (!adjacentDisplayDirectionsList.contains(dir)) {
+                    rotation = rotationFromFacingAndDirection(facing, dir).rotateClockwise();
+                }
+            }
+
+            if (facing == Direction.EAST || facing == Direction.WEST || facing == Direction.DOWN) {
+                rotation = rotation.rotateClockwise().rotateClockwise();
+            }
+        } else if (adjacentDisplayDirections.length == 4) {
+            type = DisplayPieceType.EMPTY;
+            rotation = DisplayRotation.R0;
+        } else {
+            Stardriven.LOGGER.log(Level.WARNING, "not a normal amount of displays");
+            type = DisplayPieceType.SINGLE;
+            rotation = DisplayRotation.R0;
+        }
+
+        return currentState
+                .with(DISPLAY_ROTATION, rotation)
+                .with(DISPLAY_PIECE, type);
+    }
+
+    private DisplayRotation rotationFromFacingAndDirection(Direction facing, Direction direction) {
+        // oh no
+        // im sorry i have sinned
+        switch (facing) {
+            case UP, DOWN -> {
+                switch (direction) {
+                    case WEST -> {
+                        return DisplayRotation.R0;
+                    }
+                    case NORTH -> {
+                        return DisplayRotation.R90;
+                    }
+                    case SOUTH -> {
+                        return DisplayRotation.R270;
+                    }
+                    case EAST -> {
+                        return DisplayRotation.R180;
+                    }
+                }
+            }
+            case NORTH -> {
+                switch (direction) {
+                    case DOWN -> {
+                        return DisplayRotation.R90;
+                    }
+                    case UP -> {
+                        return DisplayRotation.R270;
+                    }
+                    case WEST -> {
+                        return DisplayRotation.R0;
+                    }
+                    case EAST -> {
+                        return DisplayRotation.R180;
+                    }
+                }
+            }
+            case SOUTH -> {
+                switch (direction) {
+                    case DOWN -> {
+                        return DisplayRotation.R90;
+                    }
+                    case UP -> {
+                        return DisplayRotation.R270;
+                    }
+                    case EAST -> {
+                        return DisplayRotation.R0;
+                    }
+                    case WEST -> {
+                        return DisplayRotation.R180;
+                    }
+                }
+            }
+            case WEST -> {
+                switch (direction) {
+                    case DOWN -> {
+                        return DisplayRotation.R90;
+                    }
+                    case UP -> {
+                        return DisplayRotation.R270;
+                    }
+                    case NORTH -> {
+                        return DisplayRotation.R0;
+                    }
+                    case SOUTH -> {
+                        return DisplayRotation.R180;
+                    }
+                }
+            }
+            case EAST -> {
+                switch (direction) {
+                    case DOWN -> {
+                        return DisplayRotation.R270;
+                    }
+                    case UP -> {
+                        return DisplayRotation.R90;
+                    }
+                    case NORTH -> {
+                        return DisplayRotation.R0;
+                    }
+                    case SOUTH -> {
+                        return DisplayRotation.R180;
+                    }
+                }
+            }
+        }
+        Stardriven.LOGGER.log(Level.WARNING, "no rotation found for facing and direction");
+        return null;
     }
 
     @Override
@@ -149,27 +345,40 @@ public class DisplayBlock extends Block {
     @Override
     public void onPlaced(World world, BlockPos blockPos, BlockState blockState, @Nullable LivingEntity livingEntity, ItemStack itemStack) {
         Direction direction = blockState.get(FACING);
-        Direction[] directions;
+        Direction[] directions = getPossibleDirections(direction);
 
-        if (direction == Direction.UP || direction == Direction.DOWN) {
-            directions = new Direction[]{Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
-        } else if (direction == Direction.NORTH || direction == Direction.SOUTH) {
-            directions = new Direction[]{Direction.EAST, Direction.UP, Direction.WEST, Direction.DOWN};
-        } else {
-            directions = new Direction[]{Direction.NORTH, Direction.UP, Direction.SOUTH, Direction.DOWN};
-        }
-
-        checkForDisplay(world, blockPos, directions);
-
-        System.out.println(displayPositions);
-
+        updateConnectedDisplays(world, blockPos, directions);
 
         displayPositions.clear();
 
         super.onPlaced(world, blockPos, blockState, livingEntity, itemStack);
     }
 
-    private void checkForDisplay(World world, BlockPos blockPos, Direction[] directions) {
+    private Direction[] getPossibleDirections(Direction direction) {
+        if (direction == Direction.UP || direction == Direction.DOWN) {
+            return new Direction[]{Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
+        } else if (direction == Direction.NORTH || direction == Direction.SOUTH) {
+            return new Direction[]{Direction.EAST, Direction.UP, Direction.WEST, Direction.DOWN};
+        } else {
+            return new Direction[]{Direction.NORTH, Direction.UP, Direction.SOUTH, Direction.DOWN};
+        }
+    }
+
+    private Direction[] getAdjacentDisplays(BlockView blockView, BlockPos blockPos, Direction[] directions) {
+        List<Direction> adjacentDirections = new ArrayList<>();
+
+        for (Direction dir : directions) {
+            BlockPos placePos = blockPos.offset(dir);
+
+            if (blockView.getBlockState(placePos).isOf(this)) {
+                adjacentDirections.add(dir);
+            }
+        }
+
+        return adjacentDirections.toArray(new Direction[0]);
+    }
+
+    private void updateConnectedDisplays(World world, BlockPos blockPos, Direction[] directions) {
         for (Direction dir : directions) {
             BlockPos placePos = blockPos.offset(dir);
             if (world.getBlockState(placePos).isOf(this)) {
@@ -177,16 +386,9 @@ public class DisplayBlock extends Block {
 
                     displayPositions.add(placePos);
 
-                    checkForDisplay(world, placePos, directions);
+                    updateConnectedDisplays(world, placePos, directions);
                 }
-
-            }
-
-            if (world.getBlockState(placePos).isAir()) {
-                world.setBlockState(placePos, Blocks.DIAMOND_BLOCK.getDefaultState());
             }
         }
-
     }
-
 }
