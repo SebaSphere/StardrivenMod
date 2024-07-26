@@ -5,6 +5,7 @@ import dev.sebastianb.stardriven.api_impl.StardrivenAPIImpl;
 import dev.sebastianb.stardriven.dimension.StardrivenBiomes;
 import dev.sebastianb.stardriven.dimension.StardrivenDimensions;
 import dev.sebastianb.stardriven.block.StardrivenBlocks;
+import dev.sebastianb.stardriven.entity.StardrivenBlockEntities;
 import net.fabricmc.api.ModInitializer;
 import net.terradevelopment.terrautil.util.ModRegistry;
 
@@ -38,6 +39,7 @@ public class Stardriven implements ModInitializer {
         StardrivenDimensions.register();
         StardrivenBiomes.register();
         StardrivenBlocks.register();
+        StardrivenBlockEntities.register();
 
     }
 }

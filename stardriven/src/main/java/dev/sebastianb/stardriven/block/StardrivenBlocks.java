@@ -2,6 +2,7 @@ package dev.sebastianb.stardriven.block;
 
 import dev.sebastianb.stardriven.Stardriven;
 import dev.sebastianb.stardriven.block.display.DisplayBlock;
+import dev.sebastianb.stardriven.block.display.DisplayBlockWithEntity;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
@@ -26,27 +27,39 @@ public class StardrivenBlocks {
             .entries((context, entries) -> {
                 // TODO: make a better system to automatically add blocks to the block group
                 for (var item : DisplayBlocks.values()) {
-                    entries.add(item.asStack());
+                    if (item.inGroup) {
+                        entries.add(item.asStack());
+                    }
                 }
             })
             .build();
 
     public enum DisplayBlocks implements BlockRegistry {
 
-        DISPLAY;
+        DISPLAY(new DisplayBlock(FabricBlockSettings.create()), true),
+        DISPLAY_WITH_ENTITY(new DisplayBlockWithEntity(FabricBlockSettings.create()), false);
 
         private final String name;
         private final Block block;
+        private final boolean inGroup;
 
-
-        DisplayBlocks() {
+        DisplayBlocks(Block templateBlock, boolean inGroup) {
             name = this.toString().toLowerCase(Locale.ROOT);
-            block = Stardriven.REGISTRY.block(
-                    new DisplayBlock(FabricBlockSettings.create()),
-                    itemGroup,
-                    name().toLowerCase(Locale.ROOT)
-            );
 
+            if (inGroup) {
+                block = Stardriven.REGISTRY.block(
+                        templateBlock,
+                        itemGroup,
+                        name().toLowerCase(Locale.ROOT)
+                );
+            } else {
+                block = Stardriven.REGISTRY.block(
+                        templateBlock,
+                        name().toLowerCase(Locale.ROOT)
+                );
+            }
+
+            this.inGroup = inGroup;
         }
 
         @Override

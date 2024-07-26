@@ -1,30 +1,31 @@
 package dev.sebastianb.stardriven.block.display;
 
 import dev.sebastianb.stardriven.Stardriven;
+import dev.sebastianb.stardriven.block.StardrivenBlocks;
+import dev.sebastianb.stardriven.entity.StardrivenBlockEntities;
 import net.minecraft.block.*;
-import net.minecraft.data.client.VariantSettings;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.EnumProperty;
-import net.minecraft.state.property.IntProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.RotationPropertyHelper;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -163,25 +164,24 @@ public class DisplayBlock extends Block {
                 .with(DISPLAY_PIECE, DisplayPieceType.SINGLE)
                 .with(DISPLAY_ROTATION, DisplayRotation.R0);
 
-        return getUpdatedState(itemPlacementContext.getWorld(), itemPlacementContext.getBlockPos(), baseState);
+        // return getUpdatedState(itemPlacementContext.getWorld(), itemPlacementContext.getBlockPos(), baseState);
+        return baseState;
     }
 
     @Override
     public void neighborUpdate(BlockState blockState, World world, BlockPos blockPos, Block block, BlockPos blockPos2, boolean bl) {
-        BlockState newBlockState = getUpdatedState(world, blockPos, blockState);
+        // BlockState newBlockState = getUpdatedState(world, blockPos, blockState);
 
-        world.setBlockState(blockPos, newBlockState);
+        // world.setBlockState(blockPos, newBlockState);
 
-        super.neighborUpdate(newBlockState, world, blockPos, block, blockPos2, bl);
+        super.neighborUpdate(blockState, world, blockPos, block, blockPos2, bl);
     }
 
     @NotNull
-    private BlockState getUpdatedState(BlockView blockView, BlockPos pos, BlockState currentState) {
-        Direction facing = currentState.get(FACING);
+    protected static BlockState getUpdatedState(Direction[] adjacentDisplayDirections, BlockState previousState) {
+        Direction facing = previousState.get(FACING);
 
         Direction[] possibleDirections = getPossibleDirections(facing);
-
-        Direction[] adjacentDisplayDirections = getAdjacentDisplays(blockView, pos, possibleDirections, facing);
 
         DisplayPieceType type;
         DisplayRotation rotation;
@@ -236,12 +236,12 @@ public class DisplayBlock extends Block {
             rotation = DisplayRotation.R0;
         }
 
-        return currentState
+        return previousState
                 .with(DISPLAY_ROTATION, rotation)
                 .with(DISPLAY_PIECE, type);
     }
 
-    private DisplayRotation rotationFromFacingAndDirection(Direction facing, Direction direction) {
+    private static DisplayRotation rotationFromFacingAndDirection(Direction facing, Direction direction) {
         // oh no
         // im sorry i have sinned
         switch (facing) {
@@ -340,21 +340,49 @@ public class DisplayBlock extends Block {
         return blockState.rotate(blockMirror.getRotation(blockState.get(FACING)));
     }
 
-    private ArrayList<BlockPos> displayPositions = new ArrayList<>();
-
     @Override
     public void onPlaced(World world, BlockPos blockPos, BlockState blockState, @Nullable LivingEntity livingEntity, ItemStack itemStack) {
         Direction direction = blockState.get(FACING);
         Direction[] directions = getPossibleDirections(direction);
 
-        updateConnectedDisplays(world, blockPos, directions, direction);
+        ArrayList<BlockPos> displayPositions = new ArrayList<>();
+        displayPositions.add(blockPos);
+        getConnectedDisplays(displayPositions, new ArrayList<>(), world, blockPos, directions, direction);
 
-        displayPositions.clear();
+        if (displayPositions.size() == 1) {
+            world.setBlockState(blockPos, DisplayBlockWithEntity.blockWithEntity(blockState));
+        } else {
+            List<DisplayBlockEntity> blockEntity = findBlockEntities(world, blockPos);
+
+            blockEntity.sort(Comparator.comparingInt(DisplayBlockEntity::connectedDisplayCount));
+
+            if (blockEntity.isEmpty()) {
+                Stardriven.LOGGER.log(Level.WARNING, "No blockentity found");
+                return;
+            }
+
+            boolean updated = false;
+
+            for (int entityIndex = blockEntity.size() - 1; entityIndex >= 0; entityIndex--) {
+                if (blockEntity.get(blockEntity.size() - 1).UpdateDisplay(displayPositions)) {
+                    updated = true;
+                    break;
+                }
+            }
+
+            if (!updated) {
+                world.setBlockState(blockPos, DisplayBlockWithEntity.blockWithEntity(blockState));
+            }
+        }
 
         super.onPlaced(world, blockPos, blockState, livingEntity, itemStack);
     }
 
-    private Direction[] getPossibleDirections(Direction direction) {
+    @Override
+    public void onBroken(WorldAccess worldAccess, BlockPos blockPos, BlockState blockState) {
+    }
+
+    protected static Direction[] getPossibleDirections(Direction direction) {
         if (direction == Direction.UP || direction == Direction.DOWN) {
             return new Direction[]{Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
         } else if (direction == Direction.NORTH || direction == Direction.SOUTH) {
@@ -364,7 +392,7 @@ public class DisplayBlock extends Block {
         }
     }
 
-    private Direction[] getAdjacentDisplays(BlockView blockView, BlockPos blockPos, Direction[] directions, Direction facing) {
+    protected static Direction[] getAdjacentDisplays(BlockView blockView, BlockPos blockPos, Direction[] directions, Direction facing) {
         List<Direction> adjacentDirections = new ArrayList<>();
 
         for (Direction dir : directions) {
@@ -372,7 +400,8 @@ public class DisplayBlock extends Block {
 
             BlockState blockStateCheck = blockView.getBlockState(checkPos);
 
-            if (blockStateCheck.isOf(this)) {
+            if (blockStateCheck.isOf(StardrivenBlocks.DisplayBlocks.DISPLAY.asBlock())
+                    || blockStateCheck.isOf(StardrivenBlocks.DisplayBlocks.DISPLAY_WITH_ENTITY.asBlock())) {
                 if (blockStateCheck.get(FACING) == facing) {
                     adjacentDirections.add(dir);
                 }
@@ -382,16 +411,61 @@ public class DisplayBlock extends Block {
         return adjacentDirections.toArray(new Direction[0]);
     }
 
-    private void updateConnectedDisplays(BlockView blockView, BlockPos blockPos, Direction[] directions, Direction facing) {
+    protected static List<DisplayBlockEntity> findBlockEntities(World world, BlockPos pos) {
+        ArrayList<DisplayBlockEntity> displayBlockEntities = new ArrayList<>();
+
+        var currentBlockEntity = world.getBlockEntity(pos, StardrivenBlockEntities.DISPLAY);
+
+        if (currentBlockEntity.isPresent()) {
+            displayBlockEntities.add(currentBlockEntity.get());
+        }
+
+        ArrayList<BlockPos> possiblePositions = new ArrayList<>();
+        possiblePositions.add(pos);
+        getConnectedDisplays(possiblePositions, new ArrayList<>(), world, pos);
+
+        for (BlockPos possiblePos : possiblePositions) {
+            var attemptBlockEntity = world.getBlockEntity(possiblePos, StardrivenBlockEntities.DISPLAY);
+
+            if (attemptBlockEntity.isPresent()) {
+                displayBlockEntities.add(attemptBlockEntity.get());
+            }
+        }
+
+        // Stardriven.LOGGER.log(Level.SEVERE, "no block entity found");
+        return displayBlockEntities;
+    }
+
+    public static void getConnectedDisplays(ArrayList<BlockPos> connectedDisplays, ArrayList<BlockPos> checkedPos, BlockView blockView, BlockPos blockPos) {
+        BlockState state = blockView.getBlockState(blockPos);
+
+        Direction facing = state.get(FACING);
+
+        Direction[] directions = getPossibleDirections(facing);
+
+        getConnectedDisplays(connectedDisplays, checkedPos, blockView, blockPos, directions, facing);
+    }
+
+    public static void getConnectedDisplays(ArrayList<BlockPos> connectedDisplays, ArrayList<BlockPos> checkedPos, BlockView blockView, BlockPos blockPos, Direction[] directions, Direction facing) {
         Direction[] connectedDirections = getAdjacentDisplays(blockView, blockPos, directions, facing);
+
+        if (checkedPos.contains(blockPos)) {
+            return;
+        }
+
+        checkedPos.add(blockPos);
 
         for (Direction dir : connectedDirections) {
             BlockPos newPos = blockPos.offset(dir);
 
-            if (!displayPositions.contains(newPos)) {
-                displayPositions.add(newPos);
+            if (checkedPos.contains(newPos)) {
+                continue;
+            }
 
-                updateConnectedDisplays(blockView, newPos, connectedDirections, facing);
+            if (!connectedDisplays.contains(newPos)) {
+                connectedDisplays.add(newPos);
+
+                getConnectedDisplays(connectedDisplays, checkedPos, blockView, newPos, directions, facing);
             }
         }
     }

@@ -5,6 +5,7 @@ import dev.sebastianb.stardriven.block.StardrivenBlocks;
 import dev.sebastianb.stardriven.block.display.DisplayBlock;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
+import net.minecraft.block.Block;
 import net.minecraft.data.client.*;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
@@ -116,14 +117,16 @@ public class StardrivenModelProvider extends FabricModelProvider {
     @Override
     public void generateBlockStateModels(BlockStateModelGenerator generator) {
 
-        for (var block : StardrivenBlocks.DisplayBlocks.values()) {
+        Block displayBlock = StardrivenBlocks.DisplayBlocks.DISPLAY.asBlock();
 
-            var centerModel = ModelIds.getBlockSubModelId(block.asBlock(), "");
-            var cornerModel = ModelIds.getBlockSubModelId(block.asBlock(), "_corner");
-            var sideModel = ModelIds.getBlockSubModelId(block.asBlock(), "_side_piece");
-            var threeCornerModel = ModelIds.getBlockSubModelId(block.asBlock(), "_three_corner");
-            var emptyModel = ModelIds.getBlockSubModelId(block.asBlock(), "_empty");
-            var twoEdgePiece = ModelIds.getBlockSubModelId(block.asBlock(), "_two_side_piece");
+        var centerModel = ModelIds.getBlockSubModelId(displayBlock, "");
+        var cornerModel = ModelIds.getBlockSubModelId(displayBlock, "_corner");
+        var sideModel = ModelIds.getBlockSubModelId(displayBlock, "_side_piece");
+        var threeCornerModel = ModelIds.getBlockSubModelId(displayBlock, "_three_corner");
+        var emptyModel = ModelIds.getBlockSubModelId(displayBlock, "_empty");
+        var twoEdgePiece = ModelIds.getBlockSubModelId(displayBlock, "_two_side_piece");
+
+        for (var block : StardrivenBlocks.DisplayBlocks.values()) {
 
             // I wish minecraft made it easier to work with this
             BlockStateVariantMap facingSupplier = BlockStateVariantMap.create(Properties.FACING)
