@@ -29,6 +29,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
 
+import static dev.sebastianb.stardriven.util.DisplayUtils.*;
+
 public class DisplayBlock extends Block {
 
     public enum DisplayPieceType implements StringIdentifiable {
@@ -169,168 +171,6 @@ public class DisplayBlock extends Block {
     }
 
     @Override
-    public void neighborUpdate(BlockState blockState, World world, BlockPos blockPos, Block block, BlockPos blockPos2, boolean bl) {
-        // BlockState newBlockState = getUpdatedState(world, blockPos, blockState);
-
-        // world.setBlockState(blockPos, newBlockState);
-
-        super.neighborUpdate(blockState, world, blockPos, block, blockPos2, bl);
-    }
-
-    @NotNull
-    protected static BlockState getUpdatedState(Direction[] adjacentDisplayDirections, BlockState previousState) {
-        Direction facing = previousState.get(FACING);
-
-        Direction[] possibleDirections = getPossibleDirections(facing);
-
-        DisplayPieceType type;
-        DisplayRotation rotation;
-
-        if (adjacentDisplayDirections.length == 0) {
-            type = DisplayPieceType.SINGLE;
-            rotation = DisplayRotation.R0;
-        } else if (adjacentDisplayDirections.length == 1) {
-            type = DisplayPieceType.THREE_EDGE;
-            rotation = rotationFromFacingAndDirection(facing, adjacentDisplayDirections[0]);
-        } else if (adjacentDisplayDirections.length == 2) {
-            if (adjacentDisplayDirections[0].getOpposite() == adjacentDisplayDirections[1]) {
-                type = DisplayPieceType.TWO_SIDE;
-                rotation = rotationFromFacingAndDirection(facing, adjacentDisplayDirections[0]);
-            } else {
-                type = DisplayPieceType.CORNER;
-                DisplayRotation rotation1 = rotationFromFacingAndDirection(facing, adjacentDisplayDirections[0]);
-                DisplayRotation rotation2 = rotationFromFacingAndDirection(facing, adjacentDisplayDirections[1]);
-
-                if (rotation2.rotateClockwise() == rotation1) {
-                    rotation = rotation2;
-                } else {
-                    rotation = rotation1;
-                }
-
-                if (facing == Direction.EAST || facing == Direction.WEST || facing == Direction.DOWN) {
-                    rotation = rotation.rotateClockwise();
-                }
-            }
-        } else if (adjacentDisplayDirections.length == 3) {
-            type = DisplayPieceType.EDGE;
-
-            List<Direction> adjacentDisplayDirectionsList = Arrays.asList(adjacentDisplayDirections);
-
-            rotation = DisplayRotation.R0;
-
-            for (Direction dir : possibleDirections) {
-                if (!adjacentDisplayDirectionsList.contains(dir)) {
-                    rotation = rotationFromFacingAndDirection(facing, dir).rotateClockwise();
-                }
-            }
-
-            if (facing == Direction.EAST || facing == Direction.WEST || facing == Direction.DOWN) {
-                rotation = rotation.rotateClockwise().rotateClockwise();
-            }
-        } else if (adjacentDisplayDirections.length == 4) {
-            type = DisplayPieceType.EMPTY;
-            rotation = DisplayRotation.R0;
-        } else {
-            Stardriven.LOGGER.log(Level.WARNING, "not a normal amount of displays");
-            type = DisplayPieceType.SINGLE;
-            rotation = DisplayRotation.R0;
-        }
-
-        return previousState
-                .with(DISPLAY_ROTATION, rotation)
-                .with(DISPLAY_PIECE, type);
-    }
-
-    private static DisplayRotation rotationFromFacingAndDirection(Direction facing, Direction direction) {
-        // oh no
-        // im sorry i have sinned
-        switch (facing) {
-            case UP, DOWN -> {
-                switch (direction) {
-                    case WEST -> {
-                        return DisplayRotation.R0;
-                    }
-                    case NORTH -> {
-                        return DisplayRotation.R90;
-                    }
-                    case SOUTH -> {
-                        return DisplayRotation.R270;
-                    }
-                    case EAST -> {
-                        return DisplayRotation.R180;
-                    }
-                }
-            }
-            case NORTH -> {
-                switch (direction) {
-                    case DOWN -> {
-                        return DisplayRotation.R90;
-                    }
-                    case UP -> {
-                        return DisplayRotation.R270;
-                    }
-                    case WEST -> {
-                        return DisplayRotation.R0;
-                    }
-                    case EAST -> {
-                        return DisplayRotation.R180;
-                    }
-                }
-            }
-            case SOUTH -> {
-                switch (direction) {
-                    case DOWN -> {
-                        return DisplayRotation.R90;
-                    }
-                    case UP -> {
-                        return DisplayRotation.R270;
-                    }
-                    case EAST -> {
-                        return DisplayRotation.R0;
-                    }
-                    case WEST -> {
-                        return DisplayRotation.R180;
-                    }
-                }
-            }
-            case WEST -> {
-                switch (direction) {
-                    case DOWN -> {
-                        return DisplayRotation.R90;
-                    }
-                    case UP -> {
-                        return DisplayRotation.R270;
-                    }
-                    case NORTH -> {
-                        return DisplayRotation.R0;
-                    }
-                    case SOUTH -> {
-                        return DisplayRotation.R180;
-                    }
-                }
-            }
-            case EAST -> {
-                switch (direction) {
-                    case DOWN -> {
-                        return DisplayRotation.R270;
-                    }
-                    case UP -> {
-                        return DisplayRotation.R90;
-                    }
-                    case NORTH -> {
-                        return DisplayRotation.R0;
-                    }
-                    case SOUTH -> {
-                        return DisplayRotation.R180;
-                    }
-                }
-            }
-        }
-        Stardriven.LOGGER.log(Level.WARNING, "no rotation found for facing and direction");
-        return null;
-    }
-
-    @Override
     public BlockState rotate(BlockState blockState, BlockRotation blockRotation) {
         return blockState.with(FACING, blockRotation.rotate(blockState.get(FACING)));
     }
@@ -342,131 +182,43 @@ public class DisplayBlock extends Block {
 
     @Override
     public void onPlaced(World world, BlockPos blockPos, BlockState blockState, @Nullable LivingEntity livingEntity, ItemStack itemStack) {
-        Direction direction = blockState.get(FACING);
-        Direction[] directions = getPossibleDirections(direction);
+        // Direction direction = blockState.get(FACING);
+        // Direction[] directions = getPossibleDirections(direction);
 
-        ArrayList<BlockPos> displayPositions = new ArrayList<>();
-        displayPositions.add(blockPos);
-        getConnectedDisplays(displayPositions, new ArrayList<>(), world, blockPos, directions, direction);
+        // ArrayList<BlockPos> displayPositions = new ArrayList<>();
+        // displayPositions.add(blockPos);
+        // getConnectedDisplays(displayPositions, new ArrayList<>(), world, blockPos, directions, direction);
 
-        if (displayPositions.size() == 1) {
-            world.setBlockState(blockPos, DisplayBlockWithEntity.blockWithEntity(blockState));
-        } else {
-            List<DisplayBlockEntity> blockEntity = findBlockEntities(world, blockPos);
+        // if (displayPositions.size() == 1) {
+        //     world.setBlockState(blockPos, DisplayBlockWithEntity.blockWithEntity(blockState));
+        // } else {
+        //     List<DisplayBlockEntity> blockEntity = findBlockEntities(world, blockPos);
 
-            blockEntity.sort(Comparator.comparingInt(DisplayBlockEntity::connectedDisplayCount));
+        //     blockEntity.sort(Comparator.comparingInt(DisplayBlockEntity::connectedDisplayCount));
 
-            if (blockEntity.isEmpty()) {
-                Stardriven.LOGGER.log(Level.WARNING, "No blockentity found");
-                return;
-            }
+        //     if (blockEntity.isEmpty()) {
+        //         Stardriven.LOGGER.log(Level.WARNING, "No blockentity found");
+        //         return;
+        //     }
 
-            boolean updated = false;
+        //     boolean updated = false;
 
-            for (int entityIndex = blockEntity.size() - 1; entityIndex >= 0; entityIndex--) {
-                if (blockEntity.get(blockEntity.size() - 1).UpdateDisplay(displayPositions)) {
-                    updated = true;
-                    break;
-                }
-            }
+        //     for (int entityIndex = blockEntity.size() - 1; entityIndex >= 0; entityIndex--) {
+        //         if (blockEntity.get(blockEntity.size() - 1).UpdateDisplay(displayPositions)) {
+        //             updated = true;
+        //             break;
+        //         }
+        //     }
 
-            if (!updated) {
-                world.setBlockState(blockPos, DisplayBlockWithEntity.blockWithEntity(blockState));
-            }
-        }
+        //     if (!updated) {
+        //         world.setBlockState(blockPos, DisplayBlockWithEntity.blockWithEntity(blockState));
+        //     }
+        // }
 
         super.onPlaced(world, blockPos, blockState, livingEntity, itemStack);
     }
 
     @Override
     public void onBroken(WorldAccess worldAccess, BlockPos blockPos, BlockState blockState) {
-    }
-
-    protected static Direction[] getPossibleDirections(Direction direction) {
-        if (direction == Direction.UP || direction == Direction.DOWN) {
-            return new Direction[]{Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
-        } else if (direction == Direction.NORTH || direction == Direction.SOUTH) {
-            return new Direction[]{Direction.EAST, Direction.UP, Direction.WEST, Direction.DOWN};
-        } else {
-            return new Direction[]{Direction.NORTH, Direction.UP, Direction.SOUTH, Direction.DOWN};
-        }
-    }
-
-    protected static Direction[] getAdjacentDisplays(BlockView blockView, BlockPos blockPos, Direction[] directions, Direction facing) {
-        List<Direction> adjacentDirections = new ArrayList<>();
-
-        for (Direction dir : directions) {
-            BlockPos checkPos = blockPos.offset(dir);
-
-            BlockState blockStateCheck = blockView.getBlockState(checkPos);
-
-            if (blockStateCheck.isOf(StardrivenBlocks.DisplayBlocks.DISPLAY.asBlock())
-                    || blockStateCheck.isOf(StardrivenBlocks.DisplayBlocks.DISPLAY_WITH_ENTITY.asBlock())) {
-                if (blockStateCheck.get(FACING) == facing) {
-                    adjacentDirections.add(dir);
-                }
-            }
-        }
-
-        return adjacentDirections.toArray(new Direction[0]);
-    }
-
-    protected static List<DisplayBlockEntity> findBlockEntities(World world, BlockPos pos) {
-        ArrayList<DisplayBlockEntity> displayBlockEntities = new ArrayList<>();
-
-        var currentBlockEntity = world.getBlockEntity(pos, StardrivenBlockEntities.DISPLAY);
-
-        if (currentBlockEntity.isPresent()) {
-            displayBlockEntities.add(currentBlockEntity.get());
-        }
-
-        ArrayList<BlockPos> possiblePositions = new ArrayList<>();
-        possiblePositions.add(pos);
-        getConnectedDisplays(possiblePositions, new ArrayList<>(), world, pos);
-
-        for (BlockPos possiblePos : possiblePositions) {
-            var attemptBlockEntity = world.getBlockEntity(possiblePos, StardrivenBlockEntities.DISPLAY);
-
-            if (attemptBlockEntity.isPresent()) {
-                displayBlockEntities.add(attemptBlockEntity.get());
-            }
-        }
-
-        // Stardriven.LOGGER.log(Level.SEVERE, "no block entity found");
-        return displayBlockEntities;
-    }
-
-    public static void getConnectedDisplays(ArrayList<BlockPos> connectedDisplays, ArrayList<BlockPos> checkedPos, BlockView blockView, BlockPos blockPos) {
-        BlockState state = blockView.getBlockState(blockPos);
-
-        Direction facing = state.get(FACING);
-
-        Direction[] directions = getPossibleDirections(facing);
-
-        getConnectedDisplays(connectedDisplays, checkedPos, blockView, blockPos, directions, facing);
-    }
-
-    public static void getConnectedDisplays(ArrayList<BlockPos> connectedDisplays, ArrayList<BlockPos> checkedPos, BlockView blockView, BlockPos blockPos, Direction[] directions, Direction facing) {
-        Direction[] connectedDirections = getAdjacentDisplays(blockView, blockPos, directions, facing);
-
-        if (checkedPos.contains(blockPos)) {
-            return;
-        }
-
-        checkedPos.add(blockPos);
-
-        for (Direction dir : connectedDirections) {
-            BlockPos newPos = blockPos.offset(dir);
-
-            if (checkedPos.contains(newPos)) {
-                continue;
-            }
-
-            if (!connectedDisplays.contains(newPos)) {
-                connectedDisplays.add(newPos);
-
-                getConnectedDisplays(connectedDisplays, checkedPos, blockView, newPos, directions, facing);
-            }
-        }
     }
 }

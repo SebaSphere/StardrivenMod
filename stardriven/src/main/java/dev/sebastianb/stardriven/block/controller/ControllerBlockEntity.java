@@ -1,21 +1,25 @@
-package dev.sebastianb.stardriven.block.display;
+package dev.sebastianb.stardriven.block.controller;
 
 import dev.sebastianb.stardriven.Stardriven;
 import dev.sebastianb.stardriven.block.StardrivenBlocks;
+import dev.sebastianb.stardriven.block.display.DisplayBlock;
 import dev.sebastianb.stardriven.entity.StardrivenBlockEntities;
+import dev.sebastianb.stardriven.util.DisplayUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityTicker;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.World;
 
 import java.util.*;
 import java.util.logging.Level;
-import java.util.stream.Stream;
 
-public class DisplayBlockEntity extends BlockEntity {
+import static dev.sebastianb.stardriven.util.DisplayUtils.getPossibleDirections;
+import static dev.sebastianb.stardriven.util.DisplayUtils.getUpdatedState;
+
+public class ControllerBlockEntity extends BlockEntity {
+
     private ArrayList<BlockPos> connectedDisplays;
 
     private BlockPos minCorner;
@@ -23,23 +27,39 @@ public class DisplayBlockEntity extends BlockEntity {
 
     private Direction facing;
 
-    public DisplayBlockEntity(BlockPos blockPos, BlockState blockState) {
-        super(StardrivenBlockEntities.DISPLAY, blockPos, blockState);
-
-        connectedDisplays = new ArrayList<>();
-
-        connectedDisplays.add(blockPos);
-
-        minCorner = blockPos;
-        maxCorner = blockPos;
-
-        facing = blockState.get(DisplayBlock.FACING);
-
-        System.out.println("created block entity");
+    public ControllerBlockEntity(BlockPos blockPos, BlockState blockState) {
+        super(StardrivenBlockEntities.CONTROLLER, blockPos, blockState);
     }
 
-    public boolean UpdateDisplay(ArrayList<BlockPos> availableDisplays) {
-        Direction[] possibleDirections = DisplayBlock.getPossibleDirections(facing);
+    protected void tryConnect() {
+        for (Direction dir : Direction.values()) {
+            BlockState state = getWorld().getBlockState(getPos().offset(dir));
+            if (state.isOf(StardrivenBlocks.DisplayBlocks.DISPLAY.asBlock())) {
+                facing = state.get(DisplayBlock.FACING);
+
+                ConnectDisplays(getPos().offset(dir));
+            }
+        }
+    }
+
+    private void ConnectDisplays(BlockPos basePos) {
+        connectedDisplays = new ArrayList<>();
+
+        connectedDisplays.add(basePos);
+
+        minCorner = basePos;
+        maxCorner = basePos;
+
+        ArrayList<BlockPos> displays = new ArrayList<>();
+        ArrayList<BlockPos> checkedPos = new ArrayList<>();
+
+        DisplayUtils.getConnectedDisplays(displays, checkedPos, getWorld(), basePos);
+
+        UpdateDisplays(displays);
+    }
+
+    public boolean UpdateDisplays(ArrayList<BlockPos> availableDisplays) {
+        Direction[] possibleDirections = getPossibleDirections(facing);
 
         Vec3i size = getSize();
 
@@ -106,7 +126,7 @@ public class DisplayBlockEntity extends BlockEntity {
             minCorner = minCorner.offset(expansionDirection);
         }
 
-        if (!UpdateDisplay(availableDisplays)) {
+        if (!UpdateDisplays(availableDisplays)) {
             UpdateBlockstates();
         }
 
@@ -114,7 +134,9 @@ public class DisplayBlockEntity extends BlockEntity {
     }
 
     private void UpdateBlockstates() {
-        Direction[] possibleDirections = DisplayBlock.getPossibleDirections(facing);
+        Direction[] possibleDirections = getPossibleDirections(facing);
+
+        System.out.println(connectedDisplays);
 
         for (BlockPos pos : connectedDisplays) {
             List<Direction> connectedDirections = new ArrayList<>();
@@ -127,25 +149,12 @@ public class DisplayBlockEntity extends BlockEntity {
 
             BlockState oldBlockState = world.getBlockState(pos);
 
-            if (oldBlockState.isOf(StardrivenBlocks.DisplayBlocks.DISPLAY_WITH_ENTITY.asBlock()) && pos != getPos()) {
-                oldBlockState = StardrivenBlocks.DisplayBlocks.DISPLAY.asBlock().getDefaultState()
-                        .with(DisplayBlock.FACING, facing);
-            }
+            BlockState newBlockState = getUpdatedState(connectedDirections.toArray(new Direction[0]), oldBlockState);
 
-            BlockState newBlockState = DisplayBlock.getUpdatedState(connectedDirections.toArray(new Direction[0]), oldBlockState);
+            System.out.println(pos + " " + newBlockState + " " + Arrays.toString(connectedDirections.toArray()));
 
             world.setBlockState(pos, newBlockState);
         }
-    }
-
-    public void DisconnectDisplay(BlockPos pos) {
-        connectedDisplays.remove(pos); // TODO: actually do the right logic
-
-        System.out.println("removed display block at pos: " + pos);
-    }
-
-    public int connectedDisplayCount() {
-        return connectedDisplays.size();
     }
 
     private Vec3i getSize() {

@@ -126,6 +126,10 @@ public class StardrivenModelProvider extends FabricModelProvider {
         var emptyModel = ModelIds.getBlockSubModelId(displayBlock, "_empty");
         var twoEdgePiece = ModelIds.getBlockSubModelId(displayBlock, "_two_side_piece");
 
+        for (var block : StardrivenBlocks.ControllerBlocks.values()) {
+            System.out.println(block);
+        }
+
         for (var block : StardrivenBlocks.DisplayBlocks.values()) {
 
             // I wish minecraft made it easier to work with this
