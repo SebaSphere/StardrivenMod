@@ -2,7 +2,7 @@ package dev.sebastianb.stardriven.client.render.dimension;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import dev.sebastianb.stardriven.client.render.dimension.star.CameraRenderPosition;
+import dev.sebastianb.stardriven.client.render.dimension.star.DimensionalStarPosition;
 import dev.sebastianb.stardriven.client.render.dimension.star.GalaxyStarRendererManager;
 import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
@@ -32,7 +32,7 @@ public class SpaceSkyRenderer implements DimensionRenderingRegistry.SkyRenderer 
 
 
         starRendererManager
-                .setRelativeCameraRenderPosition(new CameraRenderPosition(0,333,0));
+                .setRelativeCameraRenderPosition(new DimensionalStarPosition(0,333,0));
 
         starRendererManager.setupBufferPositions();
 

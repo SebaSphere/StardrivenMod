@@ -41,7 +41,7 @@ public class GalaxyStarRendererManager {
     // TODO: implement star chunk rendering system of sorts after array is figured out
     HashSet<GalaxyStar> galaxyStars = new HashSet<>();
 
-    private static CameraRenderPosition cameraRenderPosition = new CameraRenderPosition(0,0,0); // starts in default position
+    private static DimensionalStarPosition cameraRenderPosition = new DimensionalStarPosition(0,0,0); // starts in default position
 
     private VertexBuffer starBuffer;
 
@@ -210,14 +210,14 @@ public class GalaxyStarRendererManager {
 
 
     // call before rendering, for use when moving the camera
-    public void setRelativeCameraRenderPosition(CameraRenderPosition cam) {
+    public void setRelativeCameraRenderPosition(DimensionalStarPosition cam) {
         getCameraRendererSingleton().setCameraPositions(cam.getX(), cam.getY(), cam.getZ());
     }
 
 
-    public static CameraRenderPosition getCameraRendererSingleton() {
+    public static DimensionalStarPosition getCameraRendererSingleton() {
         if (cameraRenderPosition == null) {
-            cameraRenderPosition = new CameraRenderPosition(0,0,0);
+            cameraRenderPosition = new DimensionalStarPosition(0,0,0);
         }
         return cameraRenderPosition;
     }

@@ -2,7 +2,7 @@ package dev.sebastianb.stardriven.client.render.dimension.star;
 
 import net.minecraft.util.math.Vec3d;
 
-public class CameraRenderPosition {
+public class DimensionalStarPosition {
     double x;
     double y;
     double z;
@@ -11,13 +11,13 @@ public class CameraRenderPosition {
     double roll;
     double yaw;
 
-    public CameraRenderPosition(double x, double y, double z) {
+    public DimensionalStarPosition(double x, double y, double z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    public CameraRenderPosition(double x, double y, double z, double pitch, double roll, double yaw) {
+    public DimensionalStarPosition(double x, double y, double z, double pitch, double roll, double yaw) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -40,6 +40,18 @@ public class CameraRenderPosition {
     }
     public double getZ() {
         return z;
+    }
+
+    public double getPitch() {
+        return pitch;
+    }
+
+    public double getRoll() {
+        return roll;
+    }
+
+    public double getYaw() {
+        return yaw;
     }
 
     public Vec3d getVec3d() {

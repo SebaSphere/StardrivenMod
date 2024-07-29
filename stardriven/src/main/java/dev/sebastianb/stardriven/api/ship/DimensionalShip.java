@@ -1,24 +1,25 @@
 package dev.sebastianb.stardriven.api.ship;
 
 import dev.sebastianb.stardriven.api.team.Team;
+import dev.sebastianb.stardriven.client.render.dimension.star.DimensionalStarPosition;
 import net.minecraft.util.math.Vec3d;
+
+import java.util.UUID;
 
 public interface DimensionalShip {
 
-    void setDimensionShipPosition(Vec3d position);
+    void setDimensionShipPosition(DimensionalStarPosition dimensionalStarPosition);
 
-    Vec3d getDimensionShipPosition();
+    DimensionalStarPosition getDimensionShipPosition();
 
-    // Set the name of the dimensional ship
     void setDimensionShipName(String name);
 
-    // Get the name of the dimensional ship
     String getDimensionShipName();
 
-    // Set the team of the dimensional ship
     void setTeam(Team team);
 
-    // Get the team of the dimensional ship
     Team getTeam();
+
+    boolean containsPlayer(UUID uuid);
 
 }

@@ -2,8 +2,10 @@ package dev.sebastianb.stardriven.api.ship;
 
 
 import dev.sebastianb.stardriven.api.team.Team;
+import dev.sebastianb.stardriven.client.render.dimension.star.DimensionalStarPosition;
 import net.minecraft.world.World;
 
+import java.nio.file.Path;
 import java.util.UUID;
 
 /**
@@ -20,8 +22,33 @@ import java.util.UUID;
  */
 public interface DimensionalShipManager {
 
-    DimensionalShip createDimensionalShip(String shipName, Team team);
+    /**
+     * Initializes the DimensionalShipManager. This method is typically called once upon creation of the manager.
+     */
+    void init(Path path);
+
+    /**
+     * Creates a new dimensional ship with the given name and team.
+     *
+     * @param shipName the name to be assigned to the new dimensional ship
+     * @param team     the team to be assigned to the new dimensional ship
+     * @return the newly created dimensional ship
+     */
+    DimensionalShip createDimensionalShip(String shipName, Team team, DimensionalStarPosition dimensionalStarPosition);
+
+    /**
+     * Deletes the dimensional ship associated with the provided UUID.
+     *
+     * @param shipId the UUID of the dimensional ship to be deleted
+     */
     void deleteDimensionalShip(UUID shipId);
+
+    /**
+     * Retrieves the dimensional ship associated with the provided UUID.
+     *
+     * @param shipId the UUID of the dimensional ship to retrieve
+     * @return the retrieved dimensional ship if found, null otherwise
+     */
     DimensionalShip getDimensionalShip(UUID shipId);
 
 

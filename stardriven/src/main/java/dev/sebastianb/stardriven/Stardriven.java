@@ -33,7 +33,7 @@ public class Stardriven implements ModInitializer {
 
         API = StardrivenAPI.api();
 
-        API.getDimensionalShipManager().deleteDimensionalShip(UUID.randomUUID());
+
 
 
         StardrivenDimensions.register();
