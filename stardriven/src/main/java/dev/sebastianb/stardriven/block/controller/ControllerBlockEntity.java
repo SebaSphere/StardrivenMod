@@ -27,19 +27,70 @@ public class ControllerBlockEntity extends BlockEntity {
 
     private Direction facing;
 
+    private class ConnectionData {
+        private Direction direction;
+
+        private BlockPos min;
+        private BlockPos max;
+
+        private int count;
+
+        private ConnectionData(Direction direction, BlockPos min, BlockPos max, int count) {
+            this.direction = direction;
+
+            this.min = min;
+            this.max = max;
+
+            this.count = count;
+        }
+    }
+
     public ControllerBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(StardrivenBlockEntities.CONTROLLER, blockPos, blockState);
+
+        connectedDisplays = new ArrayList<>();
+
+        minCorner = blockPos;
+        maxCorner = blockPos;
     }
 
     protected void tryConnect() {
+        for (var display : connectedDisplays) {
+            var oldState = world.getBlockState(display);
+
+            if (oldState.isOf(StardrivenBlocks.DisplayBlocks.DISPLAY.asBlock())) {
+                System.out.println("hi");
+
+                var newState = oldState.with(DisplayBlock.DISPLAY_PIECE, DisplayBlock.DisplayPieceType.SINGLE)
+                        .with(DisplayBlock.DISPLAY_ROTATION, DisplayBlock.DisplayRotation.R0);
+
+                world.setBlockState(display, newState);
+            }
+        }
+
+        ArrayList<ConnectionData> availableDirections = new ArrayList<>();
+
         for (Direction dir : Direction.values()) {
             BlockState state = getWorld().getBlockState(getPos().offset(dir));
             if (state.isOf(StardrivenBlocks.DisplayBlocks.DISPLAY.asBlock())) {
                 facing = state.get(DisplayBlock.FACING);
 
                 ConnectDisplays(getPos().offset(dir));
+
+                availableDirections.add(new ConnectionData(dir, minCorner, maxCorner, connectedDisplays.size()));
             }
         }
+
+        availableDirections.sort(Comparator.comparingInt(v -> v.count));
+
+        ConnectionData activeConnection = availableDirections.get(availableDirections.size() - 1);
+
+        minCorner = activeConnection.min;
+        maxCorner = activeConnection.max;
+
+        connectedDisplays = new ArrayList<>(List.of(DisplayUtils.getBlocksBetweenMinMax(minCorner, maxCorner)));
+
+        UpdateBlockstates();
     }
 
     private void ConnectDisplays(BlockPos basePos) {
@@ -58,7 +109,7 @@ public class ControllerBlockEntity extends BlockEntity {
         UpdateDisplays(displays);
     }
 
-    public boolean UpdateDisplays(ArrayList<BlockPos> availableDisplays) {
+    private boolean UpdateDisplays(ArrayList<BlockPos> availableDisplays) {
         Direction[] possibleDirections = getPossibleDirections(facing);
 
         Vec3i size = getSize();
@@ -126,9 +177,7 @@ public class ControllerBlockEntity extends BlockEntity {
             minCorner = minCorner.offset(expansionDirection);
         }
 
-        if (!UpdateDisplays(availableDisplays)) {
-            UpdateBlockstates();
-        }
+        UpdateDisplays(availableDisplays);
 
         return true;
     }

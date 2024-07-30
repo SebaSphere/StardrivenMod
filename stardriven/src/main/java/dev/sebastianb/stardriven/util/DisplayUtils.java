@@ -7,6 +7,7 @@ import dev.sebastianb.stardriven.entity.StardrivenBlockEntities;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
@@ -230,5 +231,20 @@ public class DisplayUtils {
                 getConnectedDisplays(connectedDisplays, checkedPos, blockView, newPos, directions, facing);
             }
         }
+    }
+
+    public static BlockPos[] getBlocksBetweenMinMax(BlockPos min, BlockPos max) {
+        Vec3i size = max.subtract(min).add(1, 1, 1);
+        BlockPos[] blocks = new BlockPos[size.getX() * size.getY() * size.getZ()];
+
+        for (int x = 0; x < size.getX(); x++) {
+            for (int y = 0; y < size.getY(); y++) {
+                for (int z = 0; z < size.getZ(); z++) {
+                    blocks[x * size.getZ() * size.getY() + y * size.getZ() + z] = min.add(x, y, z);
+                }
+            }
+        }
+
+        return blocks;
     }
 }
