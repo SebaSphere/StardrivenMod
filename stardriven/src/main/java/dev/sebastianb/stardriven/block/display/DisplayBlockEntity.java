@@ -4,8 +4,10 @@ import dev.sebastianb.stardriven.Stardriven;
 import dev.sebastianb.stardriven.block.StardrivenBlocks;
 import dev.sebastianb.stardriven.entity.StardrivenBlockEntities;
 import dev.sebastianb.stardriven.util.DisplayUtils;
+import dev.sebastianb.stardriven.util.NbtUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3i;
@@ -25,24 +27,6 @@ public class DisplayBlockEntity extends BlockEntity {
     private BlockPos maxCorner;
 
     private Direction facing;
-
-    private class ConnectionData {
-        private Direction direction;
-
-        private BlockPos min;
-        private BlockPos max;
-
-        private int count;
-
-        private ConnectionData(Direction direction, BlockPos min, BlockPos max, int count) {
-            this.direction = direction;
-
-            this.min = min;
-            this.max = max;
-
-            this.count = count;
-        }
-    }
 
     public DisplayBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(StardrivenBlockEntities.DISPLAY, blockPos, blockState);
@@ -175,5 +159,25 @@ public class DisplayBlockEntity extends BlockEntity {
 
     public int size() {
         return connectedDisplays.size();
+    }
+
+    @Override
+    protected void writeNbt(NbtCompound nbtCompound) {
+        super.writeNbt(nbtCompound);
+
+        NbtUtils.putBlockPos(nbtCompound, "min_corner", minCorner);
+        NbtUtils.putBlockPos(nbtCompound, "max_corner", maxCorner);
+    }
+
+    @Override
+    public void readNbt(NbtCompound nbtCompound) {
+        super.readNbt(nbtCompound);
+
+        minCorner = NbtUtils.getBlockPos(nbtCompound, "min_corner");
+        maxCorner = NbtUtils.getBlockPos(nbtCompound, "max_corner");
+
+        connectedDisplays = new ArrayList<>(List.of(DisplayUtils.getBlocksBetweenMinMax(minCorner, maxCorner)));
+
+        // maybe should do a check here to make sure all the displays actually exist
     }
 }
