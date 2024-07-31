@@ -191,7 +191,9 @@ public class DisplayUtils {
 
             BlockState blockStateCheck = blockView.getBlockState(checkPos);
 
-            if (blockStateCheck.isOf(StardrivenBlocks.DisplayBlocks.DISPLAY.asBlock()) && blockStateCheck.get(FACING) == facing) {
+            if ((blockStateCheck.isOf(StardrivenBlocks.DisplayBlocks.DISPLAY.asBlock())
+                    || blockStateCheck.isOf(StardrivenBlocks.DisplayBlocks.DISPLAY_ENTITY.asBlock()))
+                    && blockStateCheck.get(FACING) == facing) {
                 adjacentDirections.add(dir);
             }
         }

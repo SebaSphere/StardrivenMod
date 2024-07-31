@@ -1,24 +1,23 @@
-package dev.sebastianb.stardriven.block.controller;
+package dev.sebastianb.stardriven.block.display;
 
 import dev.sebastianb.stardriven.Stardriven;
 import dev.sebastianb.stardriven.block.StardrivenBlocks;
-import dev.sebastianb.stardriven.block.display.DisplayBlock;
 import dev.sebastianb.stardriven.entity.StardrivenBlockEntities;
 import dev.sebastianb.stardriven.util.DisplayUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3i;
 
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.logging.Level;
 
 import static dev.sebastianb.stardriven.util.DisplayUtils.getPossibleDirections;
 import static dev.sebastianb.stardriven.util.DisplayUtils.getUpdatedState;
 
-public class ControllerBlockEntity extends BlockEntity {
+public class DisplayBlockEntity extends BlockEntity {
 
     private ArrayList<BlockPos> connectedDisplays;
 
@@ -45,68 +44,28 @@ public class ControllerBlockEntity extends BlockEntity {
         }
     }
 
-    public ControllerBlockEntity(BlockPos blockPos, BlockState blockState) {
-        super(StardrivenBlockEntities.CONTROLLER, blockPos, blockState);
+    public DisplayBlockEntity(BlockPos blockPos, BlockState blockState) {
+        super(StardrivenBlockEntities.DISPLAY, blockPos, blockState);
 
         connectedDisplays = new ArrayList<>();
+
+        connectedDisplays.add(blockPos);
 
         minCorner = blockPos;
         maxCorner = blockPos;
     }
 
-    protected void tryConnect() {
-        for (var display : connectedDisplays) {
-            var oldState = world.getBlockState(display);
+    public boolean TryConnectDisplay(ArrayList<BlockPos> availableDisplays, BlockPos addedPosition) {
+        System.out.println(minCorner + " " + maxCorner);
+        facing = world.getBlockState(getPos()).get(DisplayBlock.FACING);
 
-            if (oldState.isOf(StardrivenBlocks.DisplayBlocks.DISPLAY.asBlock())) {
-                System.out.println("hi");
+        if (UpdateDisplays(availableDisplays)) {
+            UpdateBlockstates();
 
-                var newState = oldState.with(DisplayBlock.DISPLAY_PIECE, DisplayBlock.DisplayPieceType.SINGLE)
-                        .with(DisplayBlock.DISPLAY_ROTATION, DisplayBlock.DisplayRotation.R0);
-
-                world.setBlockState(display, newState);
-            }
+            return connectedDisplays.contains(addedPosition);
         }
 
-        ArrayList<ConnectionData> availableDirections = new ArrayList<>();
-
-        for (Direction dir : Direction.values()) {
-            BlockState state = getWorld().getBlockState(getPos().offset(dir));
-            if (state.isOf(StardrivenBlocks.DisplayBlocks.DISPLAY.asBlock())) {
-                facing = state.get(DisplayBlock.FACING);
-
-                ConnectDisplays(getPos().offset(dir));
-
-                availableDirections.add(new ConnectionData(dir, minCorner, maxCorner, connectedDisplays.size()));
-            }
-        }
-
-        availableDirections.sort(Comparator.comparingInt(v -> v.count));
-
-        ConnectionData activeConnection = availableDirections.get(availableDirections.size() - 1);
-
-        minCorner = activeConnection.min;
-        maxCorner = activeConnection.max;
-
-        connectedDisplays = new ArrayList<>(List.of(DisplayUtils.getBlocksBetweenMinMax(minCorner, maxCorner)));
-
-        UpdateBlockstates();
-    }
-
-    private void ConnectDisplays(BlockPos basePos) {
-        connectedDisplays = new ArrayList<>();
-
-        connectedDisplays.add(basePos);
-
-        minCorner = basePos;
-        maxCorner = basePos;
-
-        ArrayList<BlockPos> displays = new ArrayList<>();
-        ArrayList<BlockPos> checkedPos = new ArrayList<>();
-
-        DisplayUtils.getConnectedDisplays(displays, checkedPos, getWorld(), basePos);
-
-        UpdateDisplays(displays);
+        return false;
     }
 
     private boolean UpdateDisplays(ArrayList<BlockPos> availableDisplays) {
@@ -185,8 +144,6 @@ public class ControllerBlockEntity extends BlockEntity {
     private void UpdateBlockstates() {
         Direction[] possibleDirections = getPossibleDirections(facing);
 
-        System.out.println(connectedDisplays);
-
         for (BlockPos pos : connectedDisplays) {
             List<Direction> connectedDirections = new ArrayList<>();
 
@@ -198,9 +155,11 @@ public class ControllerBlockEntity extends BlockEntity {
 
             BlockState oldBlockState = world.getBlockState(pos);
 
-            BlockState newBlockState = getUpdatedState(connectedDirections.toArray(new Direction[0]), oldBlockState);
+            if (oldBlockState.isOf(StardrivenBlocks.DisplayBlocks.DISPLAY_ENTITY.asBlock()) && pos != getPos()) {
+                oldBlockState = DisplayBlock.stateWithoutEntity(oldBlockState);
+            }
 
-            System.out.println(pos + " " + newBlockState + " " + Arrays.toString(connectedDirections.toArray()));
+            BlockState newBlockState = getUpdatedState(connectedDirections.toArray(new Direction[0]), oldBlockState);
 
             world.setBlockState(pos, newBlockState);
         }
@@ -210,37 +169,11 @@ public class ControllerBlockEntity extends BlockEntity {
         return maxCorner.subtract(minCorner).add(1, 1, 1);
     }
 
-    private Vec3i calculateOffset(BlockPos pos) {
-        int xOffset = 0;
+    public ArrayList<BlockPos> getConnectedDisplays() {
+        return connectedDisplays;
+    }
 
-        if (minCorner.getX() - pos.getX() > 0) {
-            xOffset = -(minCorner.getX() - pos.getX());
-        }
-
-        if (maxCorner.getX() - pos.getX() < 0) {
-            xOffset = -(maxCorner.getX() - pos.getX());
-        }
-
-        int yOffset = 0;
-
-        if (minCorner.getY() - pos.getY() > 0) {
-            yOffset = -(minCorner.getY() - pos.getY());
-        }
-
-        if (maxCorner.getY() - pos.getY() < 0) {
-            yOffset = -(maxCorner.getY() - pos.getY());
-        }
-
-        int zOffset = 0;
-
-        if (minCorner.getZ() - pos.getZ() > 0) {
-            zOffset = -(minCorner.getZ() - pos.getZ());
-        }
-
-        if (maxCorner.getZ() - pos.getZ() < 0) {
-            zOffset = -(maxCorner.getZ() - pos.getZ());
-        }
-
-        return new Vec3i(xOffset, yOffset, zOffset);
+    public int size() {
+        return connectedDisplays.size();
     }
 }

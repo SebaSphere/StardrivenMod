@@ -3,6 +3,7 @@ package dev.sebastianb.stardriven.block.display;
 import dev.sebastianb.stardriven.Stardriven;
 import dev.sebastianb.stardriven.block.StardrivenBlocks;
 import dev.sebastianb.stardriven.entity.StardrivenBlockEntities;
+import dev.sebastianb.stardriven.util.DisplayUtils;
 import net.minecraft.block.*;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemPlacementContext;
@@ -182,43 +183,54 @@ public class DisplayBlock extends Block {
 
     @Override
     public void onPlaced(World world, BlockPos blockPos, BlockState blockState, @Nullable LivingEntity livingEntity, ItemStack itemStack) {
-        // Direction direction = blockState.get(FACING);
-        // Direction[] directions = getPossibleDirections(direction);
+        ArrayList<BlockPos> connectedDisplays = new ArrayList<>();
+        ArrayList<BlockPos> checkedPositions = new ArrayList<>();
 
-        // ArrayList<BlockPos> displayPositions = new ArrayList<>();
-        // displayPositions.add(blockPos);
-        // getConnectedDisplays(displayPositions, new ArrayList<>(), world, blockPos, directions, direction);
+        DisplayUtils.getConnectedDisplays(connectedDisplays, checkedPositions, world, blockPos);
 
-        // if (displayPositions.size() == 1) {
-        //     world.setBlockState(blockPos, DisplayBlockWithEntity.blockWithEntity(blockState));
-        // } else {
-        //     List<DisplayBlockEntity> blockEntity = findBlockEntities(world, blockPos);
+        connectedDisplays.add(blockPos);
 
-        //     blockEntity.sort(Comparator.comparingInt(DisplayBlockEntity::connectedDisplayCount));
+        ArrayList<DisplayBlockEntity> displayBlockEntities = new ArrayList<>();
 
-        //     if (blockEntity.isEmpty()) {
-        //         Stardriven.LOGGER.log(Level.WARNING, "No blockentity found");
-        //         return;
-        //     }
+        for (BlockPos displayPos : connectedDisplays) {
+            var be = world.getBlockEntity(displayPos, StardrivenBlockEntities.DISPLAY);
 
-        //     boolean updated = false;
+            if (be.isPresent()) {
+                displayBlockEntities.add(be.get());
+            }
+        }
 
-        //     for (int entityIndex = blockEntity.size() - 1; entityIndex >= 0; entityIndex--) {
-        //         if (blockEntity.get(blockEntity.size() - 1).UpdateDisplay(displayPositions)) {
-        //             updated = true;
-        //             break;
-        //         }
-        //     }
+        displayBlockEntities.sort(Comparator.comparingInt(DisplayBlockEntity::size));
 
-        //     if (!updated) {
-        //         world.setBlockState(blockPos, DisplayBlockWithEntity.blockWithEntity(blockState));
-        //     }
-        // }
+        boolean didConnect = false;
 
-        super.onPlaced(world, blockPos, blockState, livingEntity, itemStack);
+        for (int i = displayBlockEntities.size() - 1; i >= 0; i--) {
+            boolean connected = displayBlockEntities.get(i).TryConnectDisplay(connectedDisplays, blockPos);
+
+            if (connected) {
+                didConnect = true;
+
+                break;
+            }
+
+            connectedDisplays.removeAll(displayBlockEntities.get(i).getConnectedDisplays());
+        }
+
+        if (!didConnect) {
+            BlockState newBlockState = DisplayWithEntity.stateWithEntity(world.getBlockState(blockPos));
+
+            world.setBlockState(blockPos, newBlockState);
+        }
     }
 
     @Override
     public void onBroken(WorldAccess worldAccess, BlockPos blockPos, BlockState blockState) {
+    }
+
+    public static BlockState stateWithoutEntity(BlockState oldState) {
+        return StardrivenBlocks.DisplayBlocks.DISPLAY.asBlock().getDefaultState()
+                .with(FACING, oldState.get(FACING))
+                .with(DISPLAY_PIECE, oldState.get(DISPLAY_PIECE))
+                .with(DISPLAY_ROTATION, oldState.get(DISPLAY_ROTATION));
     }
 }
