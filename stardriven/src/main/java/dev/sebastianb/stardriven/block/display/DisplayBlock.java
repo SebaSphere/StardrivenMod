@@ -216,6 +216,25 @@ public class DisplayBlock extends Block {
     }
 
     @Override
+    public BlockState onBreak(World world, BlockPos blockPos, BlockState blockState, PlayerEntity playerEntity) {
+        if (playerEntity.isSneaking()) {
+            var blockEntities = DisplayUtils.getConnectedBlockEntities(world, blockPos);
+
+            for (var be : blockEntities) {
+                if (be.getConnectedDisplays().contains(blockPos)) {
+                    for (var pos : be.getConnectedDisplays()) {
+                        if (!pos.equals(blockPos)) {
+                            world.breakBlock(pos, true, playerEntity);
+                        }
+                    }
+                }
+            }
+        }
+
+        return super.onBreak(world, blockPos, blockState, playerEntity);
+    }
+
+    @Override
     public void onBroken(WorldAccess worldAccess, BlockPos blockPos, BlockState blockState) {
         Direction facing = blockState.get(FACING);
 

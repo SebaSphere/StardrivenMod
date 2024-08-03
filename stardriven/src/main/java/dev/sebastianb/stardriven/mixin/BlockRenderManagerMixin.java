@@ -23,7 +23,8 @@ public class BlockRenderManagerMixin {
     @Inject(method = "renderBlock", at = @At("HEAD"))
     private void renderBlock(BlockState blockState, BlockPos blockPos, BlockRenderView blockRenderView, MatrixStack matrixStack, VertexConsumer vertexConsumer, boolean bl, Random random, CallbackInfo ci) {
 
-        if (blockState.getBlock() == StardrivenBlocks.DisplayBlocks.DISPLAY.asBlock()) {
+        if (blockState.isOf(StardrivenBlocks.DisplayBlocks.DISPLAY.asBlock())
+            || blockState.isOf(StardrivenBlocks.DisplayBlocks.DISPLAY_ENTITY.asBlock())) {
 
             int rotation = blockState.get(DisplayBlock.DISPLAY_ROTATION).getRotation();
 
