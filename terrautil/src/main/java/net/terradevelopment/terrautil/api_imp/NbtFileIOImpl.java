@@ -32,7 +32,7 @@ public enum NbtFileIOImpl implements NbtFileIO {
             this.headerPath = path;
             this.workingPath = path;
         } else {
-            throw new IllegalStateException("Path already set");
+            // throw new IllegalStateException("Path already set");
         }
     }
 

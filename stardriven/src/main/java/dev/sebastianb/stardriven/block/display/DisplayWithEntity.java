@@ -18,6 +18,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -52,8 +53,31 @@ public class DisplayWithEntity extends DisplayBlock implements BlockEntityProvid
 
                 world.addParticle(ParticleTypes.HAPPY_VILLAGER, centerPos.x, centerPos.y, centerPos.z, 0.0, 0.0, 0.0);
             }
+
+            Vec3d minCenterPos = blockEntity.getMin().toCenterPos();
+
+            world.addParticle(ParticleTypes.CRIT, minCenterPos.x, minCenterPos.y + .1, minCenterPos.z, 0.0, 0.0, 0.0);
+
+            Vec3d maxCenterPos = blockEntity.getMax().toCenterPos();
+
+            world.addParticle(ParticleTypes.ELECTRIC_SPARK, maxCenterPos.x, maxCenterPos.y + .1, maxCenterPos.z, 0.0, 0.0, 0.0);
         }
 
         return super.onUse(blockState, world, blockPos, playerEntity, hand, blockHitResult);
+    }
+
+    // TODO: this doesn't work for tnt but onBroken is called after the block entity is gone
+    @Override
+    public BlockState onBreak(World world, BlockPos blockPos, BlockState blockState, PlayerEntity playerEntity) {
+        Optional<DisplayBlockEntity> be = world.getBlockEntity(blockPos, StardrivenBlockEntities.DISPLAY);
+
+        if (be.isEmpty()) {
+            Stardriven.LOGGER.log(Level.WARNING, "No block entity found for " + blockPos);
+            return super.onBreak(world, blockPos, blockState, playerEntity);
+        }
+
+        be.get().handleRemoval(blockPos);
+
+        return super.onBreak(world, blockPos, blockState, playerEntity);
     }
 }

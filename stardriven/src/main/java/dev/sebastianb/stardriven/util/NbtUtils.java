@@ -9,7 +9,7 @@ public class NbtUtils {
 
         blockPosTag.putInt("x", pos.getX());
         blockPosTag.putInt("y", pos.getY());
-        blockPosTag.putInt("z", pos.getX());
+        blockPosTag.putInt("z", pos.getZ());
 
         tag.put(identifier, blockPosTag);
     }

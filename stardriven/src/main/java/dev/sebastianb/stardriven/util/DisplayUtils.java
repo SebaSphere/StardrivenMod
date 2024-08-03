@@ -3,13 +3,13 @@ package dev.sebastianb.stardriven.util;
 import dev.sebastianb.stardriven.Stardriven;
 import dev.sebastianb.stardriven.block.StardrivenBlocks;
 import dev.sebastianb.stardriven.block.display.DisplayBlock;
+import dev.sebastianb.stardriven.block.display.DisplayBlockEntity;
 import dev.sebastianb.stardriven.entity.StardrivenBlockEntities;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -20,8 +20,43 @@ import java.util.logging.Level;
 import static dev.sebastianb.stardriven.block.display.DisplayBlock.*;
 
 public class DisplayUtils {
+
+    public static class DisplayBounds implements Cloneable {
+        public BlockPos min;
+        public BlockPos max;
+
+        public DisplayBounds(BlockPos min, BlockPos max) {
+            this.min = min;
+            this.max = max;
+        }
+
+        @Override
+        public String toString() {
+            return "DisplayBounds{" +
+                    "min=" + min +
+                    ", max=" + max +
+                    '}';
+        }
+
+        @Override
+        public DisplayBounds clone() {
+            return new DisplayBounds(min, max);
+        }
+
+        public boolean containsBlock(BlockPos pos) {
+            return pos.getX() >= min.getX() && pos.getX() <= max.getX()
+                    && pos.getY() >= min.getY() && pos.getY() <= max.getY()
+                    && pos.getZ() >= min.getZ() && pos.getZ() <= max.getZ();
+        }
+    }
+
     @NotNull
     public static BlockState getUpdatedState(Direction[] adjacentDisplayDirections, BlockState previousState) {
+        if (previousState.isAir()) {
+            Stardriven.LOGGER.log(Level.WARNING, "block state was air");
+            return previousState;
+        }
+
         Direction facing = previousState.get(FACING);
 
         Direction[] possibleDirections = getPossibleDirections(facing);
@@ -201,6 +236,17 @@ public class DisplayUtils {
         return adjacentDirections.toArray(new Direction[0]);
     }
 
+    public static ArrayList<BlockPos> getConnectedDisplays(BlockView blockView, BlockPos blockPos) {
+        ArrayList<BlockPos> connectedDisplays = new ArrayList<>();
+        ArrayList<BlockPos> checkedPositions = new ArrayList<>();
+
+        DisplayUtils.getConnectedDisplays(connectedDisplays, checkedPositions, blockView, blockPos);
+
+        connectedDisplays.add(blockPos);
+
+        return connectedDisplays;
+    }
+
     public static void getConnectedDisplays(ArrayList<BlockPos> connectedDisplays, ArrayList<BlockPos> checkedPos, BlockView blockView, BlockPos blockPos) {
         BlockState state = blockView.getBlockState(blockPos);
 
@@ -235,6 +281,25 @@ public class DisplayUtils {
         }
     }
 
+    public static List<DisplayBlockEntity> getConnectedBlockEntities(BlockView blockView, BlockPos pos) {
+        var connectedDisplays = getConnectedDisplays(blockView, pos);
+
+        return getConnectedBlockEntities(blockView, connectedDisplays);
+    }
+
+    public static ArrayList<DisplayBlockEntity> getConnectedBlockEntities(BlockView blockView, List<BlockPos> connectedDisplays) {
+        ArrayList<DisplayBlockEntity> connectedBlockEntities = new ArrayList<>();
+
+        for (var display : connectedDisplays) {
+            var blockEntity = blockView.getBlockEntity(display, StardrivenBlockEntities.DISPLAY);
+
+            blockEntity.ifPresent(connectedBlockEntities::add);
+
+        }
+
+        return connectedBlockEntities;
+    }
+
     public static BlockPos[] getBlocksBetweenMinMax(BlockPos min, BlockPos max) {
         Vec3i size = max.subtract(min).add(1, 1, 1);
         BlockPos[] blocks = new BlockPos[size.getX() * size.getY() * size.getZ()];
@@ -248,5 +313,27 @@ public class DisplayUtils {
         }
 
         return blocks;
+    }
+
+    public static BlockPos[] getBlocksInBounds(DisplayBounds bounds) {
+        return getBlocksBetweenMinMax(bounds.min, bounds.max);
+    }
+
+    public static Direction.Axis getPerpendicularAxis(Direction facing, Direction.Axis axis) {
+        Direction.Axis perpendicularAxis = null;
+
+        for (Direction.Axis axisChecked : Direction.Axis.values()) {
+            if (axisChecked == axis) {
+                continue;
+            }
+
+            if (axisChecked == facing.getAxis()) {
+                continue;
+            }
+
+            perpendicularAxis = axisChecked;
+        }
+
+        return perpendicularAxis;
     }
 }

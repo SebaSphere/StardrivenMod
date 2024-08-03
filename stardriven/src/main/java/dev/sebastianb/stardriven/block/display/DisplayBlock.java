@@ -1,36 +1,30 @@
 package dev.sebastianb.stardriven.block.display;
 
-import dev.sebastianb.stardriven.Stardriven;
 import dev.sebastianb.stardriven.block.StardrivenBlocks;
 import dev.sebastianb.stardriven.entity.StardrivenBlockEntities;
 import dev.sebastianb.stardriven.util.DisplayUtils;
 import net.minecraft.block.*;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
-import net.minecraft.util.BlockMirror;
-import net.minecraft.util.BlockRotation;
-import net.minecraft.util.StringIdentifiable;
+import net.minecraft.util.*;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
-import java.util.logging.Level;
-
-import static dev.sebastianb.stardriven.util.DisplayUtils.*;
 
 public class DisplayBlock extends Block {
 
@@ -183,37 +177,27 @@ public class DisplayBlock extends Block {
 
     @Override
     public void onPlaced(World world, BlockPos blockPos, BlockState blockState, @Nullable LivingEntity livingEntity, ItemStack itemStack) {
-        ArrayList<BlockPos> connectedDisplays = new ArrayList<>();
-        ArrayList<BlockPos> checkedPositions = new ArrayList<>();
+        var connectedDisplays = DisplayUtils.getConnectedDisplays(world, blockPos);
 
-        DisplayUtils.getConnectedDisplays(connectedDisplays, checkedPositions, world, blockPos);
+        ArrayList<DisplayBlockEntity> displayBlockEntities = DisplayUtils.getConnectedBlockEntities(world, connectedDisplays);
 
-        connectedDisplays.add(blockPos);
-
-        ArrayList<DisplayBlockEntity> displayBlockEntities = new ArrayList<>();
-
-        for (BlockPos displayPos : connectedDisplays) {
-            var be = world.getBlockEntity(displayPos, StardrivenBlockEntities.DISPLAY);
-
-            if (be.isPresent()) {
-                displayBlockEntities.add(be.get());
-            }
-        }
-
-        displayBlockEntities.sort(Comparator.comparingInt(DisplayBlockEntity::size));
+        displayBlockEntities.sort(Comparator.comparingInt(DisplayBlockEntity::getDisplayCount));
 
         boolean didConnect = false;
+        ArrayList<BlockPos> consumedDisplays = new ArrayList<>();
 
         for (int i = displayBlockEntities.size() - 1; i >= 0; i--) {
-            boolean connected = displayBlockEntities.get(i).TryConnectDisplay(connectedDisplays, blockPos);
+            if (!didConnect) {
+                boolean connected = displayBlockEntities.get(i).tryConnectDisplay(connectedDisplays, consumedDisplays, blockPos);
 
-            if (connected) {
-                didConnect = true;
+                connectedDisplays.removeAll(displayBlockEntities.get(i).getConnectedDisplays());
 
-                break;
+                if (connected) {
+                    didConnect = true;
+                }
+            } else {
+                connectedDisplays.removeAll(displayBlockEntities.get(i).getConnectedDisplays());
             }
-
-            connectedDisplays.removeAll(displayBlockEntities.get(i).getConnectedDisplays());
         }
 
         if (!didConnect) {
@@ -225,6 +209,47 @@ public class DisplayBlock extends Block {
 
     @Override
     public void onBroken(WorldAccess worldAccess, BlockPos blockPos, BlockState blockState) {
+        Direction facing = blockState.get(FACING);
+
+        ArrayList<BlockPos> connectedDisplays = new ArrayList<>();
+        ArrayList<BlockPos> checkedPositions = new ArrayList<>();
+
+        DisplayUtils.getConnectedDisplays(connectedDisplays, checkedPositions, worldAccess, blockPos,
+                DisplayUtils.getPossibleDirections(facing), facing);
+
+        connectedDisplays.add(blockPos);
+
+        ArrayList<DisplayBlockEntity> displayBlockEntities = new ArrayList<>();
+
+        for (BlockPos displayPos : connectedDisplays) {
+            var be = worldAccess.getBlockEntity(displayPos, StardrivenBlockEntities.DISPLAY);
+
+            if (be.isPresent()) {
+                displayBlockEntities.add(be.get());
+            }
+        }
+
+        for (DisplayBlockEntity displayBE : displayBlockEntities) {
+            if (displayBE.getBounds().containsBlock(blockPos)) {
+                displayBE.handleRemoval(blockPos);
+            }
+        }
+    }
+
+    @Override
+    public ActionResult onUse(BlockState blockState, World world, BlockPos blockPos, PlayerEntity playerEntity, Hand hand, BlockHitResult blockHitResult) {
+        if (playerEntity.isSneaking()) {
+            var blockEntities = DisplayUtils.getConnectedBlockEntities(world, blockPos);
+
+            for (var be : blockEntities) {
+                var pos = be.getPos().toCenterPos();
+
+                world.addParticle(ParticleTypes.HAPPY_VILLAGER, pos.x, pos.y, pos.z, 0, 0, 0);
+            }
+
+            return ActionResult.CONSUME;
+        }
+        return super.onUse(blockState, world, blockPos, playerEntity, hand, blockHitResult);
     }
 
     public static BlockState stateWithoutEntity(BlockState oldState) {
