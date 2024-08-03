@@ -61,6 +61,8 @@ public class DisplayWithEntity extends DisplayBlock implements BlockEntityProvid
             Vec3d maxCenterPos = blockEntity.getMax().toCenterPos();
 
             world.addParticle(ParticleTypes.ELECTRIC_SPARK, maxCenterPos.x, maxCenterPos.y + .1, maxCenterPos.z, 0.0, 0.0, 0.0);
+
+            return ActionResult.CONSUME;
         }
 
         return super.onUse(blockState, world, blockPos, playerEntity, hand, blockHitResult);

@@ -200,6 +200,14 @@ public class DisplayBlock extends Block {
             }
         }
 
+        for (BlockPos consumedDisplay : consumedDisplays) {
+            for (var be : displayBlockEntities) {
+                if (be.getConnectedDisplays().contains(consumedDisplay)) {
+                    be.handleRemoval(consumedDisplay);
+                }
+            }
+        }
+
         if (!didConnect) {
             BlockState newBlockState = DisplayWithEntity.stateWithEntity(world.getBlockState(blockPos));
 
