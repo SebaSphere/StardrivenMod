@@ -1,11 +1,11 @@
 {
 	"credit": "Made with Blockbench",
-	"texture_size": [64, 96],
+	"texture_size": [32, 32],
 	"textures": {
 		"0": "stardriven:block/display/holographic_flat_bottom",
 		"3": "stardriven:block/display/holographic_face3",
-		"5": "stardriven:block/display/holographic_top_face",
 		"6": "stardriven:block/display/display_face",
+		"7": "stardriven:block/display/top_face",
 		"particle": "stardriven:block/display/holographic_flat_bottom"
 	},
 	"elements": [
@@ -39,12 +39,7 @@
 			"from": [0, 2, 0],
 			"to": [16, 2.02, 16],
 			"faces": {
-				"north": {"uv": [0, 0, 8, 0], "texture": "#5"},
-				"east": {"uv": [0, 0, 8, 0], "texture": "#5"},
-				"south": {"uv": [0, 0, 8, 0], "texture": "#5"},
-				"west": {"uv": [0, 0, 8, 0], "texture": "#5"},
-				"up": {"uv": [16, 10.58333, 8, 5.33333], "texture": "#5"},
-				"down": {"uv": [16, 5.33333, 8, 10.58333], "texture": "#5"}
+				"up": {"uv": [5.33333, 16, 0, 10.66667], "texture": "#7"}
 			}
 		},
 		{
