@@ -10,3 +10,5 @@ accessible method net/minecraft/data/client/BlockStateVariantMap register (Lnet/
 # chunk render for block display
 accessible class net/minecraft/client/render/chunk/ChunkBuilder$BuiltChunk$RebuildTask
 accessible class net/minecraft/client/render/chunk/ChunkBuilder$BuiltChunk$RebuildTask$RenderData
+
+

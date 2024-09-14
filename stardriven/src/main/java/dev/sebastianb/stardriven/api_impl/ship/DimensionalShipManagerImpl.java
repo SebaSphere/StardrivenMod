@@ -5,8 +5,8 @@ import dev.sebastianb.stardriven.api.ship.DimensionalShipManager;
 import dev.sebastianb.stardriven.api.team.Team;
 import dev.sebastianb.stardriven.client.render.dimension.star.DimensionalStarPosition;
 import net.minecraft.nbt.NbtCompound;
-import net.terradevelopment.terrautil.api.NbtFileIO;
-import net.terradevelopment.terrautil.api_imp.NbtFileIOImpl;
+import net.terradevelopment.terrautil.api.file.NbtFileIO;
+import net.terradevelopment.terrautil.api_imp.file.NbtFileIOImpl;
 
 import java.nio.file.Path;
 import java.util.UUID;

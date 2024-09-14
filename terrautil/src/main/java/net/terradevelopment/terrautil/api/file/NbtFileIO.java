@@ -1,7 +1,6 @@
-package net.terradevelopment.terrautil.api;
+package net.terradevelopment.terrautil.api.file;
 
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.world.World;
 
 import java.nio.file.Path;
 
