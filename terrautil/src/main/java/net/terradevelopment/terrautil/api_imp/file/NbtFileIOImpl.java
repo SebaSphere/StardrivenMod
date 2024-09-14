@@ -1,8 +1,8 @@
-package net.terradevelopment.terrautil.api_imp;
+package net.terradevelopment.terrautil.api_imp.file;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtIo;
-import net.terradevelopment.terrautil.api.NbtFileIO;
+import net.terradevelopment.terrautil.api.file.NbtFileIO;
 
 import java.io.IOException;
 import java.nio.file.Files;
