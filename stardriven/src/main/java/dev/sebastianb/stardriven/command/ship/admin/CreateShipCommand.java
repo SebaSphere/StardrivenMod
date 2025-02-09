@@ -77,8 +77,6 @@ public class CreateShipCommand implements ICommand {
 
         }
 
-
-
         RegistryEntryLookup<Biome> biomeRegistry
                 = context.getSource().getServer().getRegistryManager().getWrapperOrThrow(RegistryKeys.BIOME);
 
@@ -88,19 +86,21 @@ public class CreateShipCommand implements ICommand {
 
         ServerWorld shipWorld = ShipCreationUtils.createOrLoadShipWorld(biomeRegistry, dynamicDimensionRegistry, shipUUID);
 
+        System.out.println(shipWorld.getDimension());
 
-        Path path = shipWorld.getServer().getSavePath(WorldSavePath.ROOT).resolve("dimensions/stardriven/interstellar-ship_" + shipUUID);
+        // Path path = shipWorld.getServer().getSavePath(WorldSavePath.ROOT).resolve("dimensions/stardriven/interstellar-ship_" + shipUUID);
 
         DimensionalShipManager dimensionalShipManager = Stardriven.API.getDimensionalShipManager();
 
-        dimensionalShipManager.init(path);
-
+        dimensionalShipManager.init(shipWorld, shipUUID);
+        System.out.println("init");
 
         dimensionalShipManager.createDimensionalShip(shipName, shipUUID,null, new DimensionalStarPosition(x, y, z));
-
+        System.out.println("create s");
         if (source.getPlayer() != null) {
             // send player to world with platform beneath
             source.getPlayer().teleport(shipWorld, 0.5, 100, 0.5, 0, 0);
+            System.out.println("teleport s");
             // create platform underneath player
             shipWorld.setBlockState(source.getPlayer().getBlockPos().down(), Blocks.GLOWSTONE.getDefaultState());
         }

@@ -18,17 +18,22 @@ import java.util.UUID;
 
 public class ShipCreationUtils {
 
+
+
     public static ServerWorld createOrLoadShipWorld(RegistryEntryLookup<Biome> biomeRegistry, DynamicDimensionRegistry dynamicDimensionRegistry, UUID shipUUID) {
+
+        System.out.println("load");
+        // TODO: make a generator
         ChunkGenerator generator = new SpaceChunkGenerator(biomeRegistry);
 
         DimensionType type
                 = new DimensionType(OptionalLong.empty(), true, false, false, true,
                 1, false, false, 0, 256, 256,
-                TagKey.of(Registries.BLOCK.getKey(), new Identifier(Stardriven.MOD_ID, "infiniburn_space")),
-                new Identifier(Stardriven.MOD_ID, "interstellar_sky"),
+                TagKey.of(Registries.BLOCK.getKey(), Identifier.of(Stardriven.MOD_ID, "infiniburn_space")),
+                Identifier.of(Stardriven.MOD_ID, "interstellar_sky"),
                 0, new DimensionType.MonsterSettings(false, true, UniformIntProvider.create(0, 7), 0));
 
-        return dynamicDimensionRegistry.loadDynamicDimension(new Identifier(Stardriven.MOD_ID, "interstellar-ship_" + shipUUID), generator, type);
+        return dynamicDimensionRegistry.createDynamicDimension(Identifier.of(Stardriven.MOD_ID, "interstellar-ship_" + shipUUID), generator, type);
 
     }
 

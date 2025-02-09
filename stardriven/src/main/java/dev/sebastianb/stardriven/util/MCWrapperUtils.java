@@ -6,7 +6,7 @@ import net.minecraft.util.Identifier;
 public class MCWrapperUtils {
 
     public static Identifier id(String modId, String path) {
-        return new Identifier(modId, path);
+        return Identifier.of(modId, path);
     }
 
     public static Identifier id(String path) {

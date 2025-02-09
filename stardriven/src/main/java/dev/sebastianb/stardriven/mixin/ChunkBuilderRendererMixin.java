@@ -2,7 +2,6 @@ package dev.sebastianb.stardriven.mixin;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.block.BlockRenderManager;
-import net.minecraft.client.render.chunk.BlockBufferBuilderStorage;
 import net.minecraft.client.render.chunk.ChunkBuilder;
 import net.minecraft.client.render.chunk.ChunkOcclusionDataBuilder;
 import net.minecraft.client.render.chunk.ChunkRendererRegion;
@@ -22,20 +21,4 @@ import java.util.Set;
 public class ChunkBuilderRendererMixin {
 
 
-    @Inject(method = "render",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/math/MatrixStack;translate(FFF)V",
-                    shift = At.Shift.AFTER),
-            locals = LocalCapture.CAPTURE_FAILHARD)
-    private void translateModel(
-                                float cameraX, float cameraY, float cameraZ, BlockBufferBuilderStorage blockBufferBuilderStorage,
-                                CallbackInfoReturnable<ChunkBuilder.BuiltChunk.RebuildTask.RenderData> cir,
-                                ChunkBuilder.BuiltChunk.RebuildTask.RenderData renderData, int i, BlockPos blockPos,
-                                BlockPos blockPos2, ChunkOcclusionDataBuilder chunkOcclusionDataBuilder,
-                                ChunkRendererRegion chunkRendererRegion, MatrixStack matrixStack,
-                                Set set, Random random, BlockRenderManager blockRenderManager,
-                                Iterator var15, BlockPos blockPos3, BlockState blockState
-    ) {
-
-
-    }
 }

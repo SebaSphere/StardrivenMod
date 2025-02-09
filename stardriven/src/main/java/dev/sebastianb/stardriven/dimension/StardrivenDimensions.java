@@ -12,14 +12,16 @@ import net.minecraft.world.dimension.DimensionOptions;
 public class StardrivenDimensions {
 
     public static final RegistryKey<DimensionOptions> SPACE_DIMENSION_KEY = RegistryKey.of(RegistryKeys.DIMENSION,
-            new Identifier("stardriven", "space"));
+            Identifier.of("stardriven", "space"));
 
     public static RegistryKey<World> SPACE_WORLD_KEY = RegistryKey.of(RegistryKeys.WORLD, SPACE_DIMENSION_KEY.getValue());
 
     public static void register() {
-        Registry.register(Registries.CHUNK_GENERATOR, Identifier.of("stardriven", "space"), SpaceChunkGenerator.CODEC);
+        Registry.register(Registries.CHUNK_GENERATOR,
+                Identifier.of("stardriven", "space"),
+                SpaceChunkGenerator.CODEC);
 
-        SPACE_WORLD_KEY = RegistryKey.of(RegistryKeys.WORLD, new Identifier("stardriven", "space"));
+        SPACE_WORLD_KEY = RegistryKey.of(RegistryKeys.WORLD, Identifier.of("stardriven", "space"));
 
 
     }

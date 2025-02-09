@@ -15,6 +15,7 @@ import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3i;
@@ -362,15 +363,15 @@ public class DisplayBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void writeNbt(NbtCompound nbtCompound) {
+    protected void writeNbt(NbtCompound nbtCompound, RegistryWrapper.WrapperLookup wrapperLookup) {
         NbtUtils.putBlockPos(nbtCompound, "min_corner", bounds.min);
         NbtUtils.putBlockPos(nbtCompound, "max_corner", bounds.max);
-
-        super.writeNbt(nbtCompound);
+        super.writeNbt(nbtCompound, wrapperLookup);
     }
 
     @Override
-    public void readNbt(NbtCompound nbtCompound) {
+    protected void readNbt(NbtCompound nbtCompound, RegistryWrapper.WrapperLookup wrapperLookup) {
+
         bounds.min = NbtUtils.getBlockPos(nbtCompound, "min_corner");
         bounds.max = NbtUtils.getBlockPos(nbtCompound, "max_corner");
 
@@ -378,7 +379,7 @@ public class DisplayBlockEntity extends BlockEntity {
 
         // maybe should do a check here to make sure all the displays actually exist
 
-        super.readNbt(nbtCompound);
+        super.readNbt(nbtCompound, wrapperLookup);
     }
 
     @Nullable
@@ -388,7 +389,7 @@ public class DisplayBlockEntity extends BlockEntity {
     }
 
     @Override
-    public NbtCompound toInitialChunkDataNbt() {
-        return createNbt();
+    public NbtCompound toInitialChunkDataNbt(RegistryWrapper.WrapperLookup wrapperLookup) {
+        return createNbt(wrapperLookup);
     }
 }

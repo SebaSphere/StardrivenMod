@@ -7,7 +7,7 @@ import net.minecraft.world.biome.Biome;
 
 public class StardrivenBiomes {
 
-    public static final RegistryKey<Biome> SPACE = RegistryKey.of(RegistryKeys.BIOME, new Identifier("stardriven", "space"));
+    public static final RegistryKey<Biome> SPACE = RegistryKey.of(RegistryKeys.BIOME, Identifier.of("stardriven", "space"));
 
     public static void register() {
 

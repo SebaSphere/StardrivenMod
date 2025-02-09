@@ -71,15 +71,12 @@ dependencies {
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    modImplementation("foundry.veil:Veil-fabric-${project.minecraft_version}:${project.veil_version}") {
-        exclude group: "maven.modrinth"
-    }
 
     modImplementation "lol.bai:badpackets:fabric-${badpackets_version}"
 
     // i lob dynamic dimensions
-    modImplementation("dev.galacticraft:dynamicdimensions-fabric:0.7.0")
-    include("dev.galacticraft:dynamicdimensions-fabric:0.7.0")
+    modImplementation("dev.galacticraft:dynamicdimensions-fabric:0.8.0+254")
+    include("dev.galacticraft:dynamicdimensions-fabric:0.8.0+254")
 
 
     implementation project(path: ":terrautil", configuration: 'namedElements')

@@ -64,7 +64,7 @@ public class StardrivenBlocks {
     // TODO: update block registry to contain the final stuff
     public static void register() {
         // TODO: move to the block register class when it gets worked on
-        Registry.register(Registries.ITEM_GROUP, new Identifier(Stardriven.MOD_ID, "block_group"), itemGroup);
+        Registry.register(Registries.ITEM_GROUP, Identifier.of(Stardriven.MOD_ID, "block_group"), itemGroup);
 
         Arrays.stream(DisplayBlocks.values()).forEach(v -> Stardriven.LOGGER.log(Level.INFO, v.name));
     }

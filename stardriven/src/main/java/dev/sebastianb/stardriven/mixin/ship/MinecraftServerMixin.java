@@ -92,13 +92,9 @@ public abstract class MinecraftServerMixin {
 
         ServerWorld world = ShipCreationUtils.createOrLoadShipWorld(biomeRegistry, dynamicDimensionRegistry, shipUUID);
 
-
         DimensionalShipManager dimensionalShipManager = Stardriven.API.getDimensionalShipManager();
 
-
-        dimensionalShipManager.init(path.resolve("ship/"));
-
-
+        dimensionalShipManager.init(world, shipUUID);
 
 
     }

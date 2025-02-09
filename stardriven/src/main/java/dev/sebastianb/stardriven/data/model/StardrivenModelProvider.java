@@ -224,7 +224,7 @@ public class StardrivenModelProvider extends FabricModelProvider {
     }
 
     private static Model blockItem(String string) {
-        return new Model(Optional.of(new Identifier(Stardriven.MOD_ID, "block/" + string)), Optional.empty());
+        return new Model(Optional.of(Identifier.of(Stardriven.MOD_ID, "block/" + string)), Optional.empty());
     }
 
 }

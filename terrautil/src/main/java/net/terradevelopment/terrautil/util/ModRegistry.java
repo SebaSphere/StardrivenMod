@@ -97,7 +97,7 @@ public class ModRegistry {
    * @see ClientRegistry
    */
   public Item item(Item item, String name) {
-    return Registry.register(Registries.ITEM, new Identifier(modid, name), item);
+    return Registry.register(Registries.ITEM, Identifier.of(modid, name), item);
   }
 
   /**
@@ -119,7 +119,7 @@ public class ModRegistry {
    * @see ClientRegistry
    */
   public Block block(Block block, String name) {
-    return Registry.register(Registries.BLOCK, new Identifier(modid, name), block);
+    return Registry.register(Registries.BLOCK, Identifier.of(modid, name), block);
   }
 
   /**
@@ -189,7 +189,7 @@ public class ModRegistry {
    * @see ClientRegistry
    */
   public <T extends BlockEntity> BlockEntityType<T> blockEntityType(BlockEntityType<T> type, String name) {
-    return Registry.register(Registries.BLOCK_ENTITY_TYPE, new Identifier(modid, name), type);
+    return Registry.register(Registries.BLOCK_ENTITY_TYPE, Identifier.of(modid, name), type);
   }
 
   /**
@@ -278,6 +278,6 @@ public class ModRegistry {
    * @see ClientRegistry
    */
   public <T extends Entity> EntityType<T> entityType(FabricEntityTypeBuilder<T> builder, String name) {
-    return Registry.register(Registries.ENTITY_TYPE, new Identifier(modid, name), builder.build());
+    return Registry.register(Registries.ENTITY_TYPE, Identifier.of(modid, name), builder.build());
   }
 }

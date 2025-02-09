@@ -264,7 +264,7 @@ public class DisplayBlock extends Block {
     }
 
     @Override
-    public ActionResult onUse(BlockState blockState, World world, BlockPos blockPos, PlayerEntity playerEntity, Hand hand, BlockHitResult blockHitResult) {
+    protected ActionResult onUse(BlockState blockState, World world, BlockPos blockPos, PlayerEntity playerEntity, BlockHitResult blockHitResult) {
         if (playerEntity.isSneaking()) {
             var blockEntities = DisplayUtils.getConnectedBlockEntities(world, blockPos);
 
@@ -276,7 +276,7 @@ public class DisplayBlock extends Block {
 
             return ActionResult.CONSUME;
         }
-        return super.onUse(blockState, world, blockPos, playerEntity, hand, blockHitResult);
+        return super.onUse(blockState, world, blockPos, playerEntity, blockHitResult);
     }
 
     public static BlockState stateWithoutEntity(BlockState oldState) {

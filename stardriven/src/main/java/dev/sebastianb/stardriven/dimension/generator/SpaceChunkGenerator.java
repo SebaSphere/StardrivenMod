@@ -1,6 +1,7 @@
 package dev.sebastianb.stardriven.dimension.generator;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.sebastianb.stardriven.dimension.StardrivenBiomes;
 import net.minecraft.block.BlockState;
@@ -29,16 +30,17 @@ import java.util.concurrent.Executor;
 
 public class SpaceChunkGenerator extends ChunkGenerator {
 
-    public static final Codec<SpaceChunkGenerator> CODEC = RecordCodecBuilder.create((instance) ->
+    public static final MapCodec<SpaceChunkGenerator> CODEC = RecordCodecBuilder.mapCodec((instance) ->
             instance.group(RegistryOps.getEntryLookupCodec(RegistryKeys.BIOME))
-                    .apply(instance, instance.stable(SpaceChunkGenerator::new)));
+                    .apply(instance, SpaceChunkGenerator::new));
 
     public SpaceChunkGenerator(RegistryEntryLookup<Biome> biomeRegistry) {
         super(new FixedBiomeSource(biomeRegistry.getOrThrow(StardrivenBiomes.SPACE)));
     }
 
+
     @Override
-    protected Codec<? extends ChunkGenerator> getCodec() {
+    protected MapCodec<? extends ChunkGenerator> getCodec() {
         return CODEC;
     }
 
@@ -127,8 +129,7 @@ public class SpaceChunkGenerator extends ChunkGenerator {
     }
 
     @Override
-    public CompletableFuture<Chunk> populateNoise(Executor executor, Blender blender, NoiseConfig noiseConfig, StructureAccessor structureAccessor, Chunk chunk) {
-
+    public CompletableFuture<Chunk> populateNoise(Blender blender, NoiseConfig noiseConfig, StructureAccessor structureAccessor, Chunk chunk) {
         return CompletableFuture.completedFuture(chunk);
     }
 

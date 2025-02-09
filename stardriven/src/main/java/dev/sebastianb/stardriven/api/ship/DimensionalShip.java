@@ -6,7 +6,7 @@ import net.minecraft.util.math.Vec3d;
 
 import java.util.UUID;
 
-public interface DimensionalShip {
+public interface DimensionalShip extends Comparable<DimensionalShip> {
 
     void setDimensionShipPosition(DimensionalStarPosition dimensionalStarPosition);
 
@@ -21,5 +21,8 @@ public interface DimensionalShip {
     Team getTeam();
 
     boolean containsPlayer(UUID uuid);
+
+    UUID getShipUUID();
+
 
 }

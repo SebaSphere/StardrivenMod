@@ -6,6 +6,9 @@ import dev.sebastianb.stardriven.client.render.dimension.star.DimensionalStarPos
 import net.minecraft.world.World;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.UUID;
 
 /**
@@ -23,9 +26,9 @@ import java.util.UUID;
 public interface DimensionalShipManager {
 
     /**
-     * Initializes the DimensionalShipManager. This method is typically called once upon creation of the manager.
+     * Initializes the ship for the given world and ship UUID.
      */
-    void init(Path path);
+    void init(World world, UUID shipUUID);
 
     /**
      * Creates a new dimensional ship with the given name and team.
@@ -50,6 +53,13 @@ public interface DimensionalShipManager {
      * @return the retrieved dimensional ship if found, null otherwise
      */
     DimensionalShip getDimensionalShip(UUID shipId);
+
+    /**
+     * Retrieves all dimensional ships managed by this DimensionalShipManager.
+     *
+     * @return an ArrayList of all dimensional ships
+     */
+    TreeSet<DimensionalShip> getAllDimensionalShips();
 
 
 }

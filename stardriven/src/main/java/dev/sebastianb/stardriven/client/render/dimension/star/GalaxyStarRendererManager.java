@@ -79,12 +79,11 @@ public class GalaxyStarRendererManager {
 
 
 
-        BufferBuilder buffer = Tessellator.getInstance().getBuffer();
+        BufferBuilder buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
         RenderSystem.setShader(GameRenderer::getPositionProgram);
         RenderSystem.enableBlend();
 
         RenderSystem.disableCull();
-        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
 
 
         // Calculate the direction from the star to the camera
@@ -146,28 +145,28 @@ public class GalaxyStarRendererManager {
 
             // Define vertices of the quad (billboard) around the star with rotation
             buffer.vertex(
-                    starToCamera.x - rotatedRight.x * halfSize - rotatedUp.x * halfSize,
-                    starToCamera.y - rotatedRight.y * halfSize - rotatedUp.y * halfSize,
-                    starToCamera.z - rotatedRight.z * halfSize - rotatedUp.z * halfSize
-            ).next();
+                    (float) (starToCamera.x - rotatedRight.x * halfSize - rotatedUp.x * halfSize),
+                    (float) (starToCamera.y - rotatedRight.y * halfSize - rotatedUp.y * halfSize),
+                    (float) (starToCamera.z - rotatedRight.z * halfSize - rotatedUp.z * halfSize)
+            );
 
             buffer.vertex(
-                    starToCamera.x + rotatedRight.x * halfSize - rotatedUp.x * halfSize,
-                    starToCamera.y + rotatedRight.y * halfSize - rotatedUp.y * halfSize,
-                    starToCamera.z + rotatedRight.z * halfSize - rotatedUp.z * halfSize
-            ).next();
+                    (float) (starToCamera.x + rotatedRight.x * halfSize - rotatedUp.x * halfSize),
+                    (float) (starToCamera.y + rotatedRight.y * halfSize - rotatedUp.y * halfSize),
+                    (float) (starToCamera.z + rotatedRight.z * halfSize - rotatedUp.z * halfSize)
+            );
 
             buffer.vertex(
-                    starToCamera.x + rotatedRight.x * halfSize + rotatedUp.x * halfSize,
-                    starToCamera.y + rotatedRight.y * halfSize + rotatedUp.y * halfSize,
-                    starToCamera.z + rotatedRight.z * halfSize + rotatedUp.z * halfSize
-            ).next();
+                    (float) (starToCamera.x + rotatedRight.x * halfSize + rotatedUp.x * halfSize),
+                    (float) (starToCamera.y + rotatedRight.y * halfSize + rotatedUp.y * halfSize),
+                    (float) (starToCamera.z + rotatedRight.z * halfSize + rotatedUp.z * halfSize)
+            );
 
             buffer.vertex(
-                    starToCamera.x - rotatedRight.x * halfSize + rotatedUp.x * halfSize,
-                    starToCamera.y - rotatedRight.y * halfSize + rotatedUp.y * halfSize,
-                    starToCamera.z - rotatedRight.z * halfSize + rotatedUp.z * halfSize
-            ).next();
+                    (float) (starToCamera.x - rotatedRight.x * halfSize + rotatedUp.x * halfSize),
+                    (float) (starToCamera.y - rotatedRight.y * halfSize + rotatedUp.y * halfSize),
+                    (float) (starToCamera.z - rotatedRight.z * halfSize + rotatedUp.z * halfSize)
+            );
         }
         this.starBuffer.bind();
         this.starBuffer.upload(buffer.end());

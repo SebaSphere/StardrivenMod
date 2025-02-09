@@ -9,7 +9,7 @@ import net.minecraft.util.Identifier;
 
 public class SDDimensionEffects {
 
-    public static final Identifier SPACE = new Identifier("stardriven", "interstellar_sky");
+    public static final Identifier SPACE = Identifier.of("stardriven", "interstellar_sky");
     public static void register() {
 
         DimensionRenderingRegistry.registerDimensionEffects(SPACE, SpaceDimensionEffect.INSTANCE);

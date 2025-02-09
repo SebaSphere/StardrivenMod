@@ -5,7 +5,7 @@ import net.minecraft.util.Identifier;
 
 public class StardrivenModelLoadingPlugin implements ModelLoadingPlugin {
 
-    public static final Identifier DISPLAY_MODEL = new Identifier("stardriven", "block/display");
+    public static final Identifier DISPLAY_MODEL = Identifier.of("stardriven", "block/display");
 
     @Override
     public void onInitializeModelLoader(Context pluginContext) {

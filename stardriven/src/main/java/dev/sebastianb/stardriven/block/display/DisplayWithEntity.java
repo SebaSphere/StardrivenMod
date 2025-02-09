@@ -44,7 +44,7 @@ public class DisplayWithEntity extends DisplayBlock implements BlockEntityProvid
     }
 
     @Override
-    public ActionResult onUse(BlockState blockState, World world, BlockPos blockPos, PlayerEntity playerEntity, Hand hand, BlockHitResult blockHitResult) {
+    protected ActionResult onUse(BlockState blockState, World world, BlockPos blockPos, PlayerEntity playerEntity, BlockHitResult blockHitResult) {
         if (playerEntity.isSneaking()) {
             DisplayBlockEntity blockEntity = (DisplayBlockEntity) world.getBlockEntity(blockPos);
 
@@ -65,7 +65,7 @@ public class DisplayWithEntity extends DisplayBlock implements BlockEntityProvid
             return ActionResult.CONSUME;
         }
 
-        return super.onUse(blockState, world, blockPos, playerEntity, hand, blockHitResult);
+        return super.onUse(blockState, world, blockPos, playerEntity, blockHitResult);
     }
 
     // TODO: this doesn't work for tnt but onBroken is called after the block entity is gone
