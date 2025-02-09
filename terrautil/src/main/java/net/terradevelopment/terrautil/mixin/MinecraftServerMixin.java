@@ -19,13 +19,12 @@ import java.util.logging.Level;
 @Mixin(MinecraftServer.class)
 public abstract class MinecraftServerMixin {
 
-    @Shadow public abstract File getRunDirectory();
+
+    @Shadow public abstract Path getRunDirectory();
 
     @Inject(method = "loadWorld", at = @At("HEAD"))
     private void start(CallbackInfo ci) {
-        Path path = getRunDirectory().toPath();
-
-
+        Path path = getRunDirectory().toAbsolutePath();
 
     }
 

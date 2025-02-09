@@ -10,13 +10,13 @@ public class StardrivenModelLoadingPlugin implements ModelLoadingPlugin {
     @Override
     public void onInitializeModelLoader(Context pluginContext) {
 
-        pluginContext.modifyModelAfterBake().register((loaded, context) -> {
-            if(context.id().toTranslationKey().startsWith(DISPLAY_MODEL.toTranslationKey())) {
-                return loaded; // new BakedDisplayBlockModel(loaded, context.textureGetter());
-            } else {
-                return loaded;
-            }
-        });
+//        pluginContext.modifyModelAfterBake().register((loaded, context) -> {
+//            if(context.id().toTranslationKey().startsWith(DISPLAY_MODEL.toTranslationKey())) {
+//                return loaded; // new BakedDisplayBlockModel(loaded, context.textureGetter());
+//            } else {
+//                return loaded;
+//            }
+//        });
     }
 
 }

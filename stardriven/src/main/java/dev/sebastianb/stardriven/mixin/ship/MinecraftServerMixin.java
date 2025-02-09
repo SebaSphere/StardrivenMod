@@ -43,9 +43,6 @@ import java.util.stream.Stream;
 @Mixin(MinecraftServer.class)
 public abstract class MinecraftServerMixin {
 
-    @Shadow
-    public abstract File getRunDirectory();
-
     @Shadow @Final protected LevelStorage.Session session;
 
     @Shadow public abstract CommandManager getCommandManager();
