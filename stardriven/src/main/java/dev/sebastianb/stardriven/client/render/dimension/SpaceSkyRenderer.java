@@ -2,10 +2,12 @@ package dev.sebastianb.stardriven.client.render.dimension;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import dev.sebastianb.stardriven.client.render.SDDimensionEffects;
 import dev.sebastianb.stardriven.client.render.dimension.star.DimensionalStarPosition;
 import dev.sebastianb.stardriven.client.render.dimension.star.GalaxyStarRendererManager;
 import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
+import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 
 public class SpaceSkyRenderer implements DimensionRenderingRegistry.SkyRenderer {
@@ -19,13 +21,19 @@ public class SpaceSkyRenderer implements DimensionRenderingRegistry.SkyRenderer 
 
         // TODO: Add a proper sky texture
         final MatrixStack matrices = context.matrixStack();
+
+        // render whole skybox black for when first loading into the dimension
+        RenderSystem.setShaderColor(0.0f, 0.0F, 0.0F, 1.0F);
+        RenderSystem.setShaderTexture(0, SDDimensionEffects.SPACE);
+        RenderSystem.setShader(GameRenderer::getPositionProgram);
+
         RenderSystem.disableBlend();
         RenderSystem.blendFuncSeparate(
                 GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO
         );
 
 
-        context.profiler().push("space_sky");
+        context.profiler().push("interstellar_sky");
 
 
         matrices.push();

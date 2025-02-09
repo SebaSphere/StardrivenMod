@@ -12,3 +12,4 @@ accessible class net/minecraft/client/render/chunk/ChunkBuilder$BuiltChunk$Rebui
 accessible class net/minecraft/client/render/chunk/ChunkBuilder$BuiltChunk$RebuildTask$RenderData
 
 
+accessible field net/minecraft/client/world/ClientWorld worldRenderer Lnet/minecraft/client/render/WorldRenderer;

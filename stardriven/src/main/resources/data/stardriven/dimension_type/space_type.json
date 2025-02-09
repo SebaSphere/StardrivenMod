@@ -1,11 +1,11 @@
 {
   "ultrawarm": false,
-  "natural": false,
+  "natural": true,
   "coordinate_scale": 1,
   "ambient_light": 0.1,
   "has_skylight": true,
   "has_ceiling": false,
-  "infiniburn": "#minecraft:infiniburn_overworld",
+  "infiniburn": "#stardriven:infiniburn_space",
   "logical_height" : 256,
   "has_raids" : false,
   "respawn_anchor_works": false,
@@ -13,7 +13,7 @@
   "piglin_safe" : false,
   "height": 256,
   "min_y": 0,
-  "effects": "stardriven:space",
-  "monster_spawn_block_light_limit": 15,
-  "monster_spawn_light_level": 15
+  "effects": "stardriven:interstellar_sky",
+  "monster_spawn_block_light_limit": 0,
+  "monster_spawn_light_level": 0
 }

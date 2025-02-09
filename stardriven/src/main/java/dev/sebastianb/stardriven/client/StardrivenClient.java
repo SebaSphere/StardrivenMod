@@ -3,6 +3,7 @@ package dev.sebastianb.stardriven.client;
 import dev.sebastianb.stardriven.block.StardrivenBlocks;
 import dev.sebastianb.stardriven.client.control.KeybindControl;
 import dev.sebastianb.stardriven.client.render.SDDimensionEffects;
+import dev.sebastianb.stardriven.networking.S2CNetworking;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
@@ -22,8 +23,8 @@ public class StardrivenClient implements ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(
                 StardrivenBlocks.DisplayBlocks.DISPLAY.asBlock(),
                 RenderLayer.getTranslucent());
-        // Replace `RenderLayer.getCutout()` with `RenderLayer.getTranslucent()`
-        // if you have a translucent texture.
+
+        S2CNetworking.registerS2CReceiver();
 
     }
 }

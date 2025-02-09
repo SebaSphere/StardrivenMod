@@ -9,34 +9,40 @@ import net.terradevelopment.terrautil.api.file.NbtFileIO;
 import net.terradevelopment.terrautil.api_imp.file.NbtFileIOImpl;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public enum DimensionalShipManagerImpl implements DimensionalShipManager {
 
     INSTANCE;
 
+
+    private final List<DimensionalShip> dimensionalShips = new ArrayList<>();
+
+
     private NbtFileIO nbt;
 
     @Override
     public void init(Path path) {
-        nbt = NbtFileIOImpl.INSTANCE;
+        nbt = new NbtFileIOImpl();
         nbt.setHeaderPath(path);
     }
 
     @Override
-    public DimensionalShip createDimensionalShip(String shipName, Team team, DimensionalStarPosition dimensionalStarPosition) {
+    public DimensionalShip createDimensionalShip(String shipName, UUID shipUUID, UUID teamUUID, DimensionalStarPosition dimensionalStarPosition) {
+
 
         DimensionalShip dimensionalShip = new DimensionalShipImpl(dimensionalStarPosition);
         dimensionalShip.setDimensionShipName(shipName);
-        dimensionalShip.setTeam(team);
 
-        UUID uuid = UUID.randomUUID();
+        // get Team from UUID
+        // dimensionalShip.setTeam(team);
 
-        nbt.setWorkingPath("ship/");
-        nbt.setFileIdentifier(uuid.toString());
+        nbt.setFileIdentifier(shipUUID.toString());
 
         NbtCompound nbtCompound = new NbtCompound();
-        nbtCompound.putUuid("shipId", uuid);
+        nbtCompound.putUuid("shipId", shipUUID);
         // nbtCompound.putUuid("teamId", team.getUUID()); // FIXME: add team UUID once implemented
         nbtCompound.putString("shipName", shipName);
 
@@ -49,9 +55,15 @@ public enum DimensionalShipManagerImpl implements DimensionalShipManager {
         shipPosition.putDouble("roll", dimensionalStarPosition.getRoll());
 
         nbtCompound.put("shipPosition", shipPosition);
+        System.out.println("work" + nbt.getWorkingPath());
 
-
+        nbt.setWorkingPath("ship/");
+        nbt.setFileTag(nbtCompound);
         nbt.writeNbtToFile(nbtCompound);
+
+        System.out.println("head" + nbt.getHeaderPath());
+
+        NbtFileIO.trackFile(nbt);
 
         return dimensionalShip;
     }
@@ -60,17 +72,10 @@ public enum DimensionalShipManagerImpl implements DimensionalShipManager {
     public void deleteDimensionalShip(UUID shipId) {
 
 
-
     }
 
     @Override
     public DimensionalShip getDimensionalShip(UUID shipId) {
-        // DimensionalShip dimensionalShip = new DimensionalShipImpl();
-
-        nbt.readNbtFromFile();
-        nbt.getFileTag();
-
-        // dimensionalShip.setDimensionShipPosition(new DimensionalStarPosition(0,0,0));
 
         return null;
     }

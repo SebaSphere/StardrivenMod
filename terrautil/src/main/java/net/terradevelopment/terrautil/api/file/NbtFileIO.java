@@ -3,6 +3,8 @@ package net.terradevelopment.terrautil.api.file;
 import net.minecraft.nbt.NbtCompound;
 
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * Represents a contract for reading and writing NBT (Named Binary Tag) files.
@@ -69,5 +71,35 @@ public interface NbtFileIO {
      */
     NbtCompound getFileTag();
 
+    void setFileTag(NbtCompound tag);
+
+
+    HashSet<NbtFileIO> trackedFiles = new HashSet<>();
+
+    /**
+     * After calling writeNbtToFile, this method should be called to track any changes to the file for autosaving purposes.
+     *
+     * @param nbtFileIO the NbtFileIO instance to track
+     */
+
+    static void trackFile(NbtFileIO nbtFileIO) {
+        System.out.println("Tracking file: " + nbtFileIO.getWorkingPath());
+        trackedFiles.add(nbtFileIO);
+    }
+
+    static void untrackFile(NbtFileIO nbtFileIO) {
+        trackedFiles.remove(nbtFileIO);
+    }
+
+    static HashSet<NbtFileIO> getTrackedFiles() {
+        return trackedFiles;
+    }
+
+    static NbtFileIO getTrackedFileFromPath(Path path) {
+        for (NbtFileIO fileIO : trackedFiles)
+            if (fileIO.getWorkingPath().equals(path))
+                return fileIO;
+        return null;
+    }
 
 }

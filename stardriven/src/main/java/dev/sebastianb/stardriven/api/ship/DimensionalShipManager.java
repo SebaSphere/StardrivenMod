@@ -31,10 +31,10 @@ public interface DimensionalShipManager {
      * Creates a new dimensional ship with the given name and team.
      *
      * @param shipName the name to be assigned to the new dimensional ship
-     * @param team     the team to be assigned to the new dimensional ship
+     * @param teamUUID     the team to be assigned to the new dimensional ship
      * @return the newly created dimensional ship
      */
-    DimensionalShip createDimensionalShip(String shipName, Team team, DimensionalStarPosition dimensionalStarPosition);
+    DimensionalShip createDimensionalShip(String shipName, UUID shipUUID, UUID teamUUID, DimensionalStarPosition dimensionalStarPosition);
 
     /**
      * Deletes the dimensional ship associated with the provided UUID.

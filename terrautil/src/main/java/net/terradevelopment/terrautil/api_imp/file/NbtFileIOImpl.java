@@ -8,10 +8,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public enum NbtFileIOImpl implements NbtFileIO {
-
-    INSTANCE;
-
+public class NbtFileIOImpl implements NbtFileIO {
 
     private Path headerPath;
     private Path workingPath;
@@ -28,12 +25,8 @@ public enum NbtFileIOImpl implements NbtFileIO {
      */
     @Override
     public void setHeaderPath(Path path) {
-        if (this.headerPath == null) {
-            this.headerPath = path;
-            this.workingPath = path;
-        } else {
-            // throw new IllegalStateException("Path already set");
-        }
+        this.headerPath = path;
+        this.workingPath = path;
     }
 
     @Override
@@ -66,9 +59,6 @@ public enum NbtFileIOImpl implements NbtFileIO {
         return workingPath;
     }
 
-
-
-
     @Override
     public void writeNbtToFile(NbtCompound tag) {
         try {
@@ -81,17 +71,31 @@ public enum NbtFileIOImpl implements NbtFileIO {
 
 
         } catch (IOException e) {
-            // e.printStackTrace();
+            e.printStackTrace();
         }
     }
 
     @Override
     public void readNbtFromFile() {
-
+        try {
+            fileTag = NbtIo.read(getWorkingPath().resolve(fileIdentifier + ".nbt"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public NbtCompound getFileTag() {
-        return null;
+        return fileTag;
+    }
+
+    @Override
+    public void setFileTag(NbtCompound tag) {
+        this.fileTag = tag;
+    }
+
+    @Override
+    public int hashCode() {
+        return getWorkingPath().hashCode();
     }
 }
