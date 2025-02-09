@@ -26,10 +26,10 @@ public enum DimensionalShipManagerImpl implements DimensionalShipManager {
     TreeSet<DimensionalShip> dimensionalShips = new TreeSet<>();
 
     @Override
-    public void init(World world, UUID shipUUID) {
+    public void init(World world, UUID shipUUID, boolean shouldLoadNBT) {
         Path path = world.getServer()
                 .getSavePath(WorldSavePath.ROOT)
-                .resolve("dimensions/stardriven/interstellar-ship_" + shipUUID + "/ship/");
+                .resolve("dimensions/stardriven/interstellar-ship_" + shipUUID + "/ship");
 
         nbt = new NbtFileIOImpl();
         nbt.setHeaderPath(path);
@@ -39,24 +39,28 @@ public enum DimensionalShipManagerImpl implements DimensionalShipManager {
         nbt.readNbtFromFile();
 
         // create dimension ship object
+        if (shouldLoadNBT) {
+            NbtCompound nbtCompound = nbt.getFileTag();
+            try {
+                NbtCompound shipPosition = nbtCompound.getCompound("shipPosition");
+                DimensionalStarPosition dimensionalStarPosition = new DimensionalStarPosition(
+                        shipPosition.getDouble("x"), shipPosition.getDouble("y"), shipPosition.getDouble("z"),
+                        shipPosition.getDouble("pitch"), shipPosition.getDouble("roll"), shipPosition.getDouble("yaw")
+                );
 
-        NbtCompound nbtCompound = nbt.getFileTag();
+                DimensionalShip dimensionalShip = createDimensionalShipObject(
+                        nbtCompound.getString("shipName"),
+                        nbtCompound.getUuid("shipId"),
+                        dimensionalStarPosition
 
-        NbtCompound shipPosition = nbtCompound.getCompound("shipPosition");
+                );
 
-        DimensionalStarPosition dimensionalStarPosition = new DimensionalStarPosition(
-                shipPosition.getDouble("x"), shipPosition.getDouble("y"), shipPosition.getDouble("z"),
-                shipPosition.getDouble("pitch"), shipPosition.getDouble("roll"), shipPosition.getDouble("yaw")
-        );
+                dimensionalShips.add(dimensionalShip);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
-        DimensionalShip dimensionalShip = createDimensionalShipObject(
-                nbtCompound.getString("shipName"),
-                nbtCompound.getUuid("shipId"),
-                dimensionalStarPosition
-
-        );
-
-        dimensionalShips.add(dimensionalShip);
 
     }
 
@@ -96,7 +100,7 @@ public enum DimensionalShipManagerImpl implements DimensionalShipManager {
 
         nbtCompound.put("shipPosition", shipPosition);
 
-        nbt.setWorkingPath("ship/");
+        nbt.setWorkingPath("./");
         nbt.setFileTag(nbtCompound);
         nbt.writeNbtToFile(nbtCompound);
 

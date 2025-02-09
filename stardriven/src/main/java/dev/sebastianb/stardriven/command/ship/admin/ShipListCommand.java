@@ -8,6 +8,7 @@ import dev.sebastianb.stardriven.api.ship.DimensionalShipManager;
 import dev.sebastianb.stardriven.command.ICommand;
 import net.minecraft.command.ControlFlowAware;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.text.Text;
 
 public class ShipListCommand implements ICommand {
     @Override
@@ -27,7 +28,13 @@ public class ShipListCommand implements ICommand {
 
         DimensionalShipManager dimensionalShipManager = Stardriven.API.getDimensionalShipManager();
         for (DimensionalShip dimensionalShip : dimensionalShipManager.getAllDimensionalShips()) {
-            System.out.println(dimensionalShip.getShipUUID());
+            source.getPlayer().sendMessage(
+                    Text.literal(
+                            "Ship: " + dimensionalShip.getDimensionShipName()
+                                    + " | Position: " + dimensionalShip.getDimensionShipPosition().getX()
+                                    + ", " + dimensionalShip.getDimensionShipPosition().getY()
+                                    + ", " + dimensionalShip.getDimensionShipPosition().getZ()
+            ));
         }
 
         return ControlFlowAware.Command.SINGLE_SUCCESS;

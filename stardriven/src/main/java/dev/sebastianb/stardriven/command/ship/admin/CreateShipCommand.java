@@ -92,10 +92,11 @@ public class CreateShipCommand implements ICommand {
 
         DimensionalShipManager dimensionalShipManager = Stardriven.API.getDimensionalShipManager();
 
-        dimensionalShipManager.init(shipWorld, shipUUID);
+        dimensionalShipManager.init(shipWorld, shipUUID, false);
+        dimensionalShipManager.createDimensionalShip(shipName, shipUUID,null, new DimensionalStarPosition(x, y, z));
+
         System.out.println("init");
 
-        dimensionalShipManager.createDimensionalShip(shipName, shipUUID,null, new DimensionalStarPosition(x, y, z));
         System.out.println("create s");
         if (source.getPlayer() != null) {
             // send player to world with platform beneath

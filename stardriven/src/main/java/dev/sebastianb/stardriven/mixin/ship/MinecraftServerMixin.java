@@ -91,7 +91,7 @@ public abstract class MinecraftServerMixin {
 
         DimensionalShipManager dimensionalShipManager = Stardriven.API.getDimensionalShipManager();
 
-        dimensionalShipManager.init(world, shipUUID);
+        dimensionalShipManager.init(world, shipUUID, true);
 
 
     }

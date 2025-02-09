@@ -28,7 +28,7 @@ public interface DimensionalShipManager {
     /**
      * Initializes the ship for the given world and ship UUID.
      */
-    void init(World world, UUID shipUUID);
+    void init(World world, UUID shipUUID, boolean shouldLoadNbt);
 
     /**
      * Creates a new dimensional ship with the given name and team.

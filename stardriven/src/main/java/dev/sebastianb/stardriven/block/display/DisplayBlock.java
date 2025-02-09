@@ -26,6 +26,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Comparator;
 
+
+// FIXME: rotations broke in 1.21
 public class DisplayBlock extends Block {
 
     public enum DisplayPieceType implements StringIdentifiable {

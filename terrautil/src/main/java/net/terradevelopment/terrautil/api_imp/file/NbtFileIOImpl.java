@@ -78,6 +78,8 @@ public class NbtFileIOImpl implements NbtFileIO {
     @Override
     public void readNbtFromFile() {
         try {
+            System.out.println("ASAS");
+            System.out.println(getWorkingPath().resolve(fileIdentifier + ".nbt"));
             fileTag = NbtIo.read(getWorkingPath().resolve(fileIdentifier + ".nbt"));
         } catch (IOException e) {
             e.printStackTrace();
