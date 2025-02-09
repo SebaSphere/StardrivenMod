@@ -20,12 +20,14 @@ public class SpaceSkyRenderer implements DimensionRenderingRegistry.SkyRenderer 
     public void render(WorldRenderContext context) {
 
         // TODO: Add a proper sky texture
-        final MatrixStack matrices = context.matrixStack();
+        MatrixStack matrices = new MatrixStack();
+
+        matrices.multiplyPositionMatrix(context.positionMatrix());
 
         // render whole skybox black for when first loading into the dimension
         RenderSystem.setShaderColor(0.0f, 0.0F, 0.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, SDDimensionEffects.SPACE);
-        RenderSystem.setShader(GameRenderer::getPositionProgram);
+//        RenderSystem.setShaderTexture(0, SDDimensionEffects.SPACE);
+//        RenderSystem.setShader(GameRenderer::getPositionProgram);
 
         RenderSystem.disableBlend();
         RenderSystem.blendFuncSeparate(

@@ -33,7 +33,7 @@ public class ShipCreationUtils {
                 Identifier.of(Stardriven.MOD_ID, "interstellar_sky"),
                 0, new DimensionType.MonsterSettings(false, true, UniformIntProvider.create(0, 7), 0));
 
-        return dynamicDimensionRegistry.createDynamicDimension(Identifier.of(Stardriven.MOD_ID, "interstellar-ship_" + shipUUID), generator, type);
+        return dynamicDimensionRegistry.loadDynamicDimension(Identifier.of(Stardriven.MOD_ID, "interstellar-ship_" + shipUUID), generator, type);
 
     }
 

@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.gl.VertexBuffer;
 import net.minecraft.client.render.*;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.HashSet;
@@ -195,10 +196,12 @@ public class GalaxyStarRendererManager {
             this.starBuffer.bind();
 
 
+            MatrixStack matrices = new MatrixStack();
 
+            matrices.multiplyPositionMatrix(context.positionMatrix());
 
             this.starBuffer.draw(
-                    context.matrixStack().peek().getPositionMatrix(),
+                    matrices.peek().getPositionMatrix(),
                     context.projectionMatrix(),
                     GameRenderer.getPositionProgram()
             );
