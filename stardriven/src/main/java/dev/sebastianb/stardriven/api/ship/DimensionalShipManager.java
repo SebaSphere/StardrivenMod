@@ -4,6 +4,7 @@ package dev.sebastianb.stardriven.api.ship;
 import dev.sebastianb.stardriven.api.team.Team;
 import dev.sebastianb.stardriven.client.render.dimension.star.DimensionalStarPosition;
 import net.minecraft.world.World;
+import net.terradevelopment.terrautil.api.file.NbtFileIO;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -59,7 +60,9 @@ public interface DimensionalShipManager {
      *
      * @return an ArrayList of all dimensional ships
      */
-    TreeSet<DimensionalShip> getAllDimensionalShips();
+    TreeMap<UUID, DimensionalShip> getAllDimensionalShips();
+
+    NbtFileIO loadShipNBT(String shipName, UUID shipUUID, DimensionalStarPosition dimensionalStarPosition);
 
 
 }

@@ -23,7 +23,7 @@ public enum DimensionalShipManagerImpl implements DimensionalShipManager {
     private NbtFileIO nbt;
 
     // TODO: comparable by UUID (to make it fast to retrieve ships via binary search)
-    TreeSet<DimensionalShip> dimensionalShips = new TreeSet<>();
+    TreeMap<UUID, DimensionalShip> dimensionalShips = new TreeMap<>();
 
     @Override
     public void init(World world, UUID shipUUID, boolean shouldLoadNBT) {
@@ -55,7 +55,7 @@ public enum DimensionalShipManagerImpl implements DimensionalShipManager {
 
                 );
 
-                dimensionalShips.add(dimensionalShip);
+                dimensionalShips.put(shipUUID, dimensionalShip);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -71,17 +71,30 @@ public enum DimensionalShipManagerImpl implements DimensionalShipManager {
         DimensionalShip dimensionalShip =
                 createDimensionalShipObject(shipName, shipUUID, dimensionalStarPosition);
 
-        dimensionalShips.add(dimensionalShip);
+        dimensionalShips.put(shipUUID, dimensionalShip);
 
         return dimensionalShip;
     }
 
     private @NotNull DimensionalShip createDimensionalShipObject(String shipName, UUID shipUUID, DimensionalStarPosition dimensionalStarPosition) {
-        DimensionalShip dimensionalShip = new DimensionalShipImpl(dimensionalStarPosition, shipUUID, shipName);
+        DimensionalShip dimensionalShip = new DimensionalShipImpl(nbt, dimensionalStarPosition, shipUUID, shipName);
         dimensionalShip.setDimensionShipName(shipName);
 
         // get Team from UUID
         // dimensionalShip.setTeam(team);
+
+
+        this.loadShipNBT(shipName, shipUUID, dimensionalStarPosition);
+
+        // tracks the nbt changes
+        NbtFileIO.trackFile(nbt);
+        return dimensionalShip;
+    }
+
+    @Override
+    public NbtFileIO loadShipNBT(String shipName, UUID shipUUID, DimensionalStarPosition dimensionalStarPosition) {
+
+        DimensionalShip dimensionalShip = dimensionalShips.get(shipUUID);
 
         nbt.setFileIdentifier(shipUUID.toString());
 
@@ -101,27 +114,31 @@ public enum DimensionalShipManagerImpl implements DimensionalShipManager {
         nbtCompound.put("shipPosition", shipPosition);
 
         nbt.setWorkingPath("./");
+        nbt.setHeaderPath(nbt.getHeaderPath().getParent().getParent()
+                .resolve("interstellar-ship_" + shipUUID + "/ship/"));
+
+        nbt.setFileIdentifier(String.valueOf(shipUUID));
+        System.out.println("ASASASE");
+        System.out.println(nbt.getFileIdentifier());
         nbt.setFileTag(nbtCompound);
         nbt.writeNbtToFile(nbtCompound);
 
-        // tracks the nbt changes
-        NbtFileIO.trackFile(nbt);
-        return dimensionalShip;
+        return nbt;
     }
 
     @Override
     public void deleteDimensionalShip(UUID shipId) {
-
-
+        DimensionalShip searchShip = DimensionalShipImpl.getUUID(shipId);
+        // TODO: delete logical instance of ship + nbt data + move actual loaded world to a backup
     }
 
     @Override
     public DimensionalShip getDimensionalShip(UUID shipId) {
-        return null;
+        return dimensionalShips.getOrDefault(shipId, null);
     }
 
     @Override
-    public TreeSet<DimensionalShip> getAllDimensionalShips() {
+    public TreeMap<UUID, DimensionalShip> getAllDimensionalShips() {
         return dimensionalShips;
     }
 }

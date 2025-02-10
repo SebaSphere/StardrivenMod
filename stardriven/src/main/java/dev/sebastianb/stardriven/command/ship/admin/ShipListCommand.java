@@ -27,7 +27,10 @@ public class ShipListCommand implements ICommand {
         ServerCommandSource source = context.getSource();
 
         DimensionalShipManager dimensionalShipManager = Stardriven.API.getDimensionalShipManager();
-        for (DimensionalShip dimensionalShip : dimensionalShipManager.getAllDimensionalShips()) {
+        for (DimensionalShip dimensionalShip : dimensionalShipManager.getAllDimensionalShips().values()) {
+
+            System.out.println(dimensionalShipManager.getDimensionalShip(dimensionalShip.getShipUUID()).getShipUUID() + " MEOW!");
+
             source.getPlayer().sendMessage(
                     Text.literal(
                             "Ship: " + dimensionalShip.getDimensionShipName()

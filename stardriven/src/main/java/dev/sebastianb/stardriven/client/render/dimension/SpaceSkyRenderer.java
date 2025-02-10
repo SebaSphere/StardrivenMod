@@ -9,6 +9,10 @@ import net.fabricmc.fabric.api.client.rendering.v1.DimensionRenderingRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.world.World;
+
+import java.util.HashMap;
 
 public class SpaceSkyRenderer implements DimensionRenderingRegistry.SkyRenderer {
 
@@ -16,11 +20,20 @@ public class SpaceSkyRenderer implements DimensionRenderingRegistry.SkyRenderer 
 
     protected final GalaxyStarRendererManager starRendererManager = new GalaxyStarRendererManager();
 
+
+    // could be better
+    public static HashMap<String, DimensionalStarPosition> shipPositions = new HashMap<>();
+
+    public static void updateShipPosition(String shipDimensionID, double x, double y, double z) {
+        shipPositions.put(shipDimensionID, new DimensionalStarPosition(x,y,z));
+    }
+
     @Override
     public void render(WorldRenderContext context) {
 
         // TODO: Add a proper sky texture
         MatrixStack matrices = new MatrixStack();
+
 
         matrices.multiplyPositionMatrix(context.positionMatrix());
 
@@ -40,9 +53,18 @@ public class SpaceSkyRenderer implements DimensionRenderingRegistry.SkyRenderer 
 
         matrices.push();
 
+        // System.out.println(context.world().getRegistryKey().getValue().toString());
+        var selfShip = shipPositions
+                .getOrDefault(context.world().getRegistryKey().getValue().toString(),
+                        new DimensionalStarPosition(0,1111,0)
+                );
+
 
         starRendererManager
-                .setRelativeCameraRenderPosition(new DimensionalStarPosition(0,-5,0));
+                .setRelativeCameraRenderPosition(
+                        new DimensionalStarPosition(selfShip.getX(), selfShip.getY(), selfShip.getZ()
+                        )
+                );
 
         starRendererManager.setupBufferPositions();
 

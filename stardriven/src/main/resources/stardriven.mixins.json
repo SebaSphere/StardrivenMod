@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "AmbientOcclusionFaceMixin",
+    "PlayerMixin",
     "ship.MinecraftServerMixin",
     "ship.ServerWorldMixin"
   ],
